@@ -87,7 +87,7 @@ class _ModeGrid extends StatelessWidget {
         final mode = ctrl.modes[i];
         final int count = mode['count'] as int;
 
-        // ✅ GridView এর ভেতরে প্রতিটা item আলাদা Obx
+        //
         return Obx(() {
           final isSelected = ctrl.selectedMode.value == i;
           return GestureDetector(
@@ -214,8 +214,8 @@ class _Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 32.w,
-      height: 32.h,
+      width: 30.w,
+      height: 30.h,
       decoration: BoxDecoration(
         color: bgColor,
         shape: BoxShape.circle,

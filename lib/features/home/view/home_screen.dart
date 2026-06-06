@@ -23,6 +23,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gap(32.h),
+
               _HeaderSection(),
               Gap(32.h),
               _RulesCard(),
@@ -49,26 +50,35 @@ class _HeaderSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 56.w,
-          height: 56.h,
-          decoration: BoxDecoration(
-            color: AppColors.primaryFixed,
-            borderRadius: BorderRadius.circular(16.r),
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            width: 56.w,
+            height: 56.h,
+            decoration: BoxDecoration(
+              color: AppColors.primaryFixed,
+              borderRadius: BorderRadius.circular(16.r),
+            ),
+            child: Icon(Icons.sports_esports_rounded, color: AppColors.primary, size: 28.sp),
           ),
-          child: Icon(Icons.sports_esports_rounded, color: AppColors.primary, size: 28.sp),
         ),
         Gap(16.h),
-        CustomText.displayLg(
-          AppStrings.gameTitle,
-          color: AppColors.primary,
-          fontWeight: FontWeight.w800,
-          letterSpacing: -0.5,
+        Align(
+          alignment: Alignment.center,
+          child: CustomText.displayLg(
+            AppStrings.gameTitle,
+            color: AppColors.primary,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
+          ),
         ),
         Gap(8.h),
-        CustomText.bodyLg(
-          AppStrings.howToPlay,
-          color: AppColors.onSurfaceVariant,
+        Align(
+          alignment: Alignment.center,
+          child: CustomText.bodyLg(
+            AppStrings.howToPlay,
+            color: AppColors.onSurfaceVariant,
+          ),
         ),
       ],
     );

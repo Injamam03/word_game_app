@@ -18,7 +18,7 @@ class WinnerController extends GetxController {
 
   int get accuracy {
     if (usedWords.isEmpty) return 100;
-    return (winnerScore / (usedWords.length * 10) * 100).clamp(0, 100).round();
+    return (winnerScore / (usedWords.length * 1) * 100).clamp(0, 100).round();
   }
 
   String get bestWord {

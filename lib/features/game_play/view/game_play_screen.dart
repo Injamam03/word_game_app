@@ -13,7 +13,6 @@ class GamePlayScreen extends StatelessWidget {
   const GamePlayScreen({super.key});
 
   @override
-
   Widget build(BuildContext context) {
     final ctrl = Get.find<GamePlayController>();
     return Scaffold(
@@ -22,22 +21,25 @@ class GamePlayScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
+            // ✅ horizontal scroll player row
             _PlayerRow(ctrl: ctrl),
             _TurnIndicator(ctrl: ctrl),
-            // ✅ error banner
-            Obx(() => ctrl.showError.value
-                ? _ErrorBanner(ctrl: ctrl)
-                : const SizedBox.shrink()),
-            // ✅ computer word banner
-            Obx(() => (ctrl.players.any((p) => p.isComputer) &&
-                ctrl.computerLastWord.value.isNotEmpty)
-                ? _ComputerWordBanner(ctrl: ctrl)
-                : const SizedBox.shrink()),
-            // ✅ player word columns — Expanded দিয়ে বাকি space নেবে
+            Obx(() {
+              final show = ctrl.showError.value; // Explicit access
+              return show ? _ErrorBanner(ctrl: ctrl) : const SizedBox.shrink();
+            }),
+            Obx(() {
+              // Ensure observable is accessed even if other conditions are false
+              final computerWord = ctrl.computerLastWord.value;
+              final hasComputer = ctrl.players.any((p) => p.isComputer);
+              return (hasComputer && computerWord.isNotEmpty)
+                  ? _ComputerWordBanner(ctrl: ctrl)
+                  : const SizedBox.shrink();
+            }),
+            // ✅ player word columns — horizontal scroll
             Expanded(
               child: _PlayerWordsArea(ctrl: ctrl),
             ),
-            // ✅ required letter — Obx সরিয়ে widget এর ভেতরে রাখা হয়েছে
             _RequiredLetterHint(ctrl: ctrl),
             _InputArea(ctrl: ctrl),
             Gap(24.h),
@@ -85,16 +87,22 @@ class _GameAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: AppColors.primaryFixed,
               borderRadius: BorderRadius.circular(20.r),
             ),
-            child: Obx(() => Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.timer_rounded,
-                    color: AppColors.primary, size: 14.sp),
-                Gap(4.w),
-                CustomText.labelLg(ctrl.formattedTime,
-                    color: AppColors.primary, fontWeight: FontWeight.w700),
-              ],
-            )),
+            child: Obx(() {
+              // Explicitly access the Rx variable used inside the getter
+              final _ = ctrl.elapsedSeconds.value; 
+              final time = ctrl.formattedTime;
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.timer_rounded,
+                      color: AppColors.primary, size: 14.sp),
+                  Gap(4.w),
+                  CustomText.labelLg(time,
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700),
+                ],
+              );
+            }),
           ),
         ),
       ],
@@ -102,8 +110,7 @@ class _GameAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-// ─── Player Row ───────────────────────────────────────────────────────────────
-// ✅ Horizontal scroll, fixed card size, word count instead of pts
+// ─── Player Row — Horizontal Scroll ──────────────────────────────────────────
 
 class _PlayerRow extends StatelessWidget {
   final GamePlayController ctrl;
@@ -121,7 +128,6 @@ class _PlayerRow extends StatelessWidget {
           children: ctrl.players.map((player) {
             return Padding(
               padding: EdgeInsets.only(right: 8.w),
-              // ✅ Obx শুধু card এর ভেতরে, বাইরে না
               child: _PlayerCard(player: player),
             );
           }).toList(),
@@ -137,7 +143,6 @@ class _PlayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ একটাই Obx, nested Obx নেই
     return Obx(() {
       final isActive = player.isActive.value;
       final isEliminated = player.isEliminated.value;
@@ -187,7 +192,6 @@ class _PlayerCard extends StatelessWidget {
                 ],
               ),
               Gap(3.h),
-              // ✅ "0 word" / "1 word" / "2 words"
               CustomText.labelSm(
                 '$wordCount ${wordCount == 1 ? 'word' : 'words'}',
                 color: isActive ? AppColors.primary : AppColors.outline,
@@ -210,35 +214,40 @@ class _TurnIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Container(
-      width: double.infinity,
-      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.outlineVariant),
-        boxShadow: [
-          BoxShadow(
-              color: AppColors.shadow,
-              blurRadius: 8,
-              offset: const Offset(0, 2)),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.play_arrow_rounded,
-              color: AppColors.primary, size: 18.sp),
-          Gap(8.w),
-          CustomText.titleMd(
-            '${AppStrings.nowPlaying}${ctrl.currentPlayer.name}',
-            color: AppColors.onSurface,
-            fontWeight: FontWeight.w600,
-          ),
-        ],
-      ),
-    ));
+    return Obx(() {
+      // Explicitly access the index to register dependency
+      final index = ctrl.currentPlayerIndex.value;
+      final currentPlayerName = ctrl.players[index].name;
+      return Container(
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: AppColors.outlineVariant),
+          boxShadow: [
+            BoxShadow(
+                color: AppColors.shadow,
+                blurRadius: 8,
+                offset: const Offset(0, 2)),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.play_arrow_rounded,
+                color: AppColors.primary, size: 18.sp),
+            Gap(8.w),
+            CustomText.titleMd(
+              '${AppStrings.nowPlaying}$currentPlayerName',
+              color: AppColors.onSurface,
+              fontWeight: FontWeight.w600,
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -309,8 +318,7 @@ class _ComputerWordBanner extends StatelessWidget {
   }
 }
 
-// ─── Player Words Area ────────────────────────────────────────────────────────
-// ✅ Obx নেই বাইরে — প্রতিটা column নিজে reactive
+// ─── Player Words Area — Horizontal Scroll ────────────────────────────────────
 
 class _PlayerWordsArea extends StatelessWidget {
   final GamePlayController ctrl;
@@ -318,11 +326,31 @@ class _PlayerWordsArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: ctrl.players.map((player) {
-        return Expanded(child: _PlayerWordColumn(player: player));
-      }).toList(),
+    final double colWidth = 110.w;
+    final double totalWidth = ctrl.players.length * colWidth;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double actualWidth = totalWidth < screenWidth ? screenWidth : totalWidth;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: actualWidth,
+            height: constraints.maxHeight,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: ctrl.players.map((player) {
+                return SizedBox(
+                  width: actualWidth / ctrl.players.length,
+                  height: constraints.maxHeight,
+                  child: _PlayerWordColumn(player: player),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -334,8 +362,8 @@ class _PlayerWordColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ─── Name Header with underline ───
         Container(
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: 8.h),
@@ -353,9 +381,7 @@ class _PlayerWordColumn extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        // ─── Word List ───
-        Expanded(
-          // ✅ শুধু word list Obx এ
+        Flexible(
           child: Obx(() {
             if (player.myWords.isEmpty) {
               return Padding(
@@ -371,13 +397,11 @@ class _PlayerWordColumn extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
               itemCount: player.myWords.length,
               itemBuilder: (_, i) {
-                // সবচেয়ে নতুন word উপরে
                 final word = player.myWords[player.myWords.length - 1 - i];
                 final isLatest = i == 0;
                 return Container(
                   margin: EdgeInsets.only(bottom: 6.h),
-                  padding:
-                  EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                   decoration: BoxDecoration(
                     color: isLatest
                         ? AppColors.primaryFixed
@@ -392,8 +416,7 @@ class _PlayerWordColumn extends StatelessWidget {
                   child: CustomText.labelSm(
                     word.toUpperCase(),
                     color: isLatest ? AppColors.primary : AppColors.onSurface,
-                    fontWeight:
-                    isLatest ? FontWeight.w700 : FontWeight.w500,
+                    fontWeight: isLatest ? FontWeight.w700 : FontWeight.w500,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -415,18 +438,16 @@ class _RequiredLetterHint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Obx ভেতরে, widget বাইরে
     return Obx(() {
-      if (ctrl.requiredLetter.value.isEmpty) return const SizedBox.shrink();
+      final requiredLetter = ctrl.requiredLetter.value;
+      if (requiredLetter.isEmpty) return const SizedBox.shrink();
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 6.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomText.bodyMd(
-              AppStrings.nextWordStartsWith,
-              color: AppColors.onSurfaceVariant,
-            ),
+            CustomText.bodyMd(AppStrings.nextWordStartsWith,
+                color: AppColors.onSurfaceVariant),
             Gap(8.w),
             Container(
               width: 34.w,
@@ -437,7 +458,7 @@ class _RequiredLetterHint extends StatelessWidget {
               ),
               child: Center(
                 child: CustomText.headlineSm(
-                  ctrl.requiredLetter.value,
+                  requiredLetter,
                   color: AppColors.onPrimary,
                   fontWeight: FontWeight.w800,
                 ),
@@ -461,7 +482,9 @@ class _InputArea extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Obx(() {
-        final isComputerTurn = ctrl.currentPlayer.isComputer;
+        // Explicitly access the index to register dependency
+        final index = ctrl.currentPlayerIndex.value;
+        final isComputerTurn = ctrl.players[index].isComputer;
         final isValidating = ctrl.isValidating.value;
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -493,8 +516,9 @@ class _InputArea extends StatelessWidget {
                 Expanded(
                   flex: 2,
                   child: CustomButton(
-                    label:
-                    isValidating ? 'Checking...' : AppStrings.submitWord,
+                    label: isValidating
+                        ? 'Checking...'
+                        : AppStrings.submitWord,
                     onTap: isComputerTurn || isValidating
                         ? null
                         : ctrl.submitWord,

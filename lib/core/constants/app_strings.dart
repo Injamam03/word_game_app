@@ -63,6 +63,19 @@ class AppStrings {
   static const String rankings = 'Rankings';
   static const String settings = 'Settings';
 
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Routes
   static const String routeHome = '/';
   static const String routePlayerSelection = '/player-selection';
@@ -70,4 +83,5 @@ class AppStrings {
   static const String routeGamePlay = '/game-play';
   static const String routeWinner = '/winner';
   static const String routeMainScreen = '/main';
+
 }

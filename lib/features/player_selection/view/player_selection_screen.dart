@@ -27,7 +27,7 @@ class PlayerSelectionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gap(24.h),
-              CustomText.headlineLg(
+              CustomText.headlineMd(
                 AppStrings.choosePlayers,
                 color: AppColors.onBackground,
                 fontWeight: FontWeight.w700,
@@ -53,7 +53,8 @@ class PlayerSelectionScreen extends StatelessWidget {
               Obx(() => CustomButton(
                 label: AppStrings.next,
                 onTap: ctrl.canProceed ? ctrl.goNext : null,
-                trailing: Icon(Icons.arrow_forward_rounded, color: AppColors.onPrimary, size: 20.sp),
+                trailing: Icon(Icons.arrow_forward_rounded,
+                    color: AppColors.onPrimary, size: 20.sp),
               )),
               Gap(24.h),
             ],
@@ -63,6 +64,8 @@ class PlayerSelectionScreen extends StatelessWidget {
     );
   }
 }
+
+// ─── Mode Grid ───────────────────────────────────────────────────────────────
 
 class _ModeGrid extends StatelessWidget {
   final PlayerSelectionController ctrl;
@@ -77,65 +80,152 @@ class _ModeGrid extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: 12.h,
         crossAxisSpacing: 12.w,
-        childAspectRatio: 1.4,
+        childAspectRatio: 1.1,
       ),
       itemCount: ctrl.modes.length,
       itemBuilder: (_, i) {
-        final isSelected = ctrl.selectedMode.value == i;
         final mode = ctrl.modes[i];
-        return GestureDetector(
-          onTap: () => ctrl.selectMode(i),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.all(16.r),
-            decoration: BoxDecoration(
-              color: isSelected ? AppColors.primaryFixed : AppColors.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(
-                color: isSelected ? AppColors.primary : AppColors.outlineVariant,
-                width: isSelected ? 2 : 1,
+        final int count = mode['count'] as int;
+
+        // ✅ GridView এর ভেতরে প্রতিটা item আলাদা Obx
+        return Obx(() {
+          final isSelected = ctrl.selectedMode.value == i;
+          return GestureDetector(
+            onTap: () => ctrl.selectMode(i),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: EdgeInsets.all(14.r),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? AppColors.primaryFixed
+                    : AppColors.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(16.r),
+                border: Border.all(
+                  color: isSelected
+                      ? AppColors.primary
+                      : AppColors.outlineVariant,
+                  width: isSelected ? 2 : 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadow,
+                    blurRadius: 20,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              boxShadow: [
-                BoxShadow(color: AppColors.shadow, blurRadius: 20, offset: const Offset(0, 4)),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 40.w,
-                  height: 40.h,
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : AppColors.primaryFixed,
-                    borderRadius: BorderRadius.circular(10.r),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _AvatarRow(count: count, isSelected: isSelected),
+                  Gap(10.h),
+                  CustomText.labelSm(
+                    mode['label'] as String,
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
                   ),
-                  child: Icon(
-                    mode['icon'] as IconData,
-                    color: isSelected ? AppColors.onPrimary : AppColors.primary,
-                    size: 22.sp,
+                  Gap(2.h),
+                  CustomText.titleMd(
+                    mode['sub'] as String,
+                    color: isSelected
+                        ? AppColors.primary
+                        : AppColors.onSurface,
+                    fontWeight: FontWeight.w700,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Gap(8.h),
-                CustomText.labelSm(
-                  mode['label'] as String,
-                  color: AppColors.onSurfaceVariant,
-                  fontWeight: FontWeight.w500,
-                ),
-                CustomText.titleMd(
-                  mode['sub'] as String,
-                  color: isSelected ? AppColors.primary : AppColors.onSurface,
-                  fontWeight: FontWeight.w700,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
+          );
+        });
       },
     );
   }
 }
+
+// ─── Avatar Row ──────────────────────────────────────────────────────────────
+
+class _AvatarRow extends StatelessWidget {
+  final int count; // -1 = computer vs human, 2/3/4 = players
+  final bool isSelected;
+
+  const _AvatarRow({required this.count, required this.isSelected});
+
+  @override
+  Widget build(BuildContext context) {
+    final Color bgColor =
+    isSelected ? AppColors.primary : AppColors.primaryFixed;
+    final Color iconColor =
+    isSelected ? AppColors.onPrimary : AppColors.primary;
+    final Color compColor =
+    isSelected ? AppColors.secondary : AppColors.secondaryContainer;
+    final Color compIconColor =
+    isSelected ? AppColors.onSecondary : AppColors.onSecondaryContainer;
+
+    // Computer vs Human
+    if (count == -1) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _Avatar(bgColor: bgColor, iconColor: iconColor, icon: Icons.person_rounded),
+          Gap(6.w),
+          Icon(Icons.compare_arrows_rounded,
+              color: isSelected ? AppColors.primary : AppColors.outline,
+              size: 16.sp),
+          Gap(6.w),
+          _Avatar(bgColor: compColor, iconColor: compIconColor, icon: Icons.smart_toy_rounded),
+        ],
+      );
+    }
+
+    // 2, 3, 4 players — show person avatars with spacing
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(count, (i) {
+        return Padding(
+          padding: EdgeInsets.only(right: i < count - 1 ? 6.w : 0),
+          child: _Avatar(
+            bgColor: bgColor,
+            iconColor: iconColor,
+            icon: Icons.person_rounded,
+          ),
+        );
+      }),
+    );
+  }
+}
+
+// ─── Single Avatar ───────────────────────────────────────────────────────────
+
+class _Avatar extends StatelessWidget {
+  final Color bgColor;
+  final Color iconColor;
+  final IconData icon;
+
+  const _Avatar({
+    required this.bgColor,
+    required this.iconColor,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 32.w,
+      height: 32.h,
+      decoration: BoxDecoration(
+        color: bgColor,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, color: iconColor, size: 18.sp),
+    );
+  }
+}
+
+// ─── Custom Player Input ──────────────────────────────────────────────────────
 
 class _CustomPlayerInput extends StatelessWidget {
   final PlayerSelectionController ctrl;
@@ -150,7 +240,10 @@ class _CustomPlayerInput extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: AppColors.outlineVariant),
         boxShadow: [
-          BoxShadow(color: AppColors.shadow, blurRadius: 20, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: AppColors.shadow,
+              blurRadius: 20,
+              offset: const Offset(0, 4)),
         ],
       ),
       child: Column(
@@ -169,7 +262,8 @@ class _CustomPlayerInput extends StatelessWidget {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             maxLength: 2,
             onChanged: ctrl.onCustomChanged,
-            suffixIcon: Icon(Icons.edit_rounded, color: AppColors.outline, size: 18.sp),
+            suffixIcon:
+            Icon(Icons.edit_rounded, color: AppColors.outline, size: 18.sp),
           ),
           Gap(8.h),
           CustomText.labelSm(

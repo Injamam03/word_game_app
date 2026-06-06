@@ -14,7 +14,7 @@ class AppStrings {
   static const String startButton = 'Start Game';
 
   // Player Selection
-  static const String choosePlayers = 'Choose Players';
+  static const String choosePlayers = 'Choose Players Number';
   static const String selectModeSubtitle = 'Select a mode to start your word journey';
   static const String soloMode = 'Solo Mode';
   static const String vsComputer = 'You vs Computer';

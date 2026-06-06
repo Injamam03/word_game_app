@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import '../../../core/constants/app_strings.dart';
 import '../../../core/utils/computer_player.dart';
 import '../../../core/utils/word_validator.dart';
@@ -11,6 +13,8 @@ class PlayerModel {
   RxInt score = 0.obs;
   RxBool isEliminated = false.obs;
   RxBool isActive = false.obs;
+  RxList<String> myWords = <String>[].obs;
+  RxInt wordCount = 0.obs; // ✅ word count
 
   PlayerModel({required this.name, this.isComputer = false});
 }
@@ -20,13 +24,14 @@ class GamePlayController extends GetxController {
   late bool hasComputer;
 
   final RxList<String> usedWords = <String>[].obs;
-  final RxString currentWord = ''.obs;
   final RxString lastWord = ''.obs;
   final RxString requiredLetter = ''.obs;
   final RxString errorMessage = ''.obs;
   final RxBool showError = false.obs;
+  final RxBool isValidating = false.obs;
   final RxInt currentPlayerIndex = 0.obs;
   final RxInt elapsedSeconds = 0.obs;
+  final RxString computerLastWord = ''.obs;
   final wordController = TextEditingController();
   Timer? _timer;
 
@@ -34,13 +39,16 @@ class GamePlayController extends GetxController {
   void onInit() {
     super.onInit();
     final args = Get.arguments as Map<String, dynamic>? ?? {};
-    final names = args['playerNames'] as List<dynamic>? ?? ['Player 1', 'Player 2'];
+    final names =
+        args['playerNames'] as List<dynamic>? ?? ['Player 1', 'Player 2'];
     hasComputer = args['isComputer'] as bool? ?? false;
 
-    players = names.map((name) => PlayerModel(
+    players = names
+        .map((name) => PlayerModel(
       name: name.toString(),
       isComputer: name.toString() == AppStrings.computerName,
-    )).toList();
+    ))
+        .toList();
 
     players[0].isActive.value = true;
     _startTimer();
@@ -61,19 +69,48 @@ class GamePlayController extends GetxController {
 
   PlayerModel get currentPlayer => players[currentPlayerIndex.value];
 
-  List<PlayerModel> get activePlayers => players.where((p) => !p.isEliminated.value).toList();
+  List<PlayerModel> get activePlayers =>
+      players.where((p) => !p.isEliminated.value).toList();
 
-  void submitWord() {
-    final word = wordController.text.trim();
+  // ─── Dictionary API Check ────────────────────────────────────────────────
+  Future<bool> _isValidEnglishWord(String word) async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}'),
+      ).timeout(const Duration(seconds: 5));
+      return response.statusCode == 200;
+    } catch (_) {
+      // internet না থাকলে valid ধরে নেব
+      return true;
+    }
+  }
+
+  // ─── Submit Word ─────────────────────────────────────────────────────────
+  Future<void> submitWord() async {
+    final word = wordController.text.trim().toLowerCase();
     if (word.isEmpty) return;
 
-    if (usedWords.isNotEmpty && !WordValidator.isValidChain(word, lastWord.value)) {
+    // Duplicate check
+    if (WordValidator.isDuplicate(word, usedWords)) {
+      _showError(AppStrings.wordAlreadyUsed);
+      return;
+    }
+
+    // Chain check
+    if (usedWords.isNotEmpty &&
+        !WordValidator.isValidChain(word, lastWord.value)) {
       _showError('Word must start with letter "${requiredLetter.value}"');
       return;
     }
 
-    if (WordValidator.isDuplicate(word, usedWords)) {
-      _showError(AppStrings.wordAlreadyUsed);
+    // Dictionary check
+    isValidating.value = true;
+    final isValid = await _isValidEnglishWord(word);
+    isValidating.value = false;
+
+    if (!isValid) {
+      _showError('"$word" is not a valid English word!');
       return;
     }
 
@@ -85,10 +122,11 @@ class GamePlayController extends GetxController {
     lastWord.value = word;
     requiredLetter.value = WordValidator.getRequiredStartLetter(word);
     currentPlayer.score.value += word.length * 10;
+    currentPlayer.myWords.add(word);
+    currentPlayer.wordCount.value++; // ✅ এই line add করো
     wordController.clear();
     showError.value = false;
     errorMessage.value = '';
-    currentWord.value = '';
     _nextTurn();
   }
 
@@ -117,7 +155,6 @@ class GamePlayController extends GetxController {
     currentPlayerIndex.value = next;
     players[next].isActive.value = true;
     showError.value = false;
-
     _checkComputerTurn();
   }
 
@@ -126,12 +163,15 @@ class GamePlayController extends GetxController {
       Future.delayed(const Duration(milliseconds: 1500), () {
         if (currentPlayer.isComputer && !currentPlayer.isEliminated.value) {
           final word = ComputerPlayer.generateWord(
-            requiredLetter.value.isEmpty ? 'a' : requiredLetter.value.toLowerCase(),
+            requiredLetter.value.isEmpty
+                ? 'a'
+                : requiredLetter.value.toLowerCase(),
             usedWords.toList(),
           );
           if (word.isEmpty) {
             stopPlayer();
           } else {
+            computerLastWord.value = word; // ✅ computer word দেখানোর জন্য
             _acceptWord(word);
           }
         }
@@ -141,7 +181,8 @@ class GamePlayController extends GetxController {
 
   void _endGame() {
     _timer?.cancel();
-    final winner = activePlayers.isNotEmpty ? activePlayers.first : players.first;
+    final winner =
+    activePlayers.isNotEmpty ? activePlayers.first : players.first;
     Get.toNamed(
       AppStrings.routeWinner,
       arguments: {

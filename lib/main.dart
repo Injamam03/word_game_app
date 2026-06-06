@@ -22,7 +22,7 @@ class WordChainApp extends StatelessWidget {
       builder: (_, child) {
         return GetMaterialApp(
           title: AppStrings.appName,
-          theme: AppTheme.lightTheme,
+          // theme: AppTheme.lightTheme,
           debugShowCheckedModeBanner: false,
           initialRoute: AppStrings.routeHome,
           getPages: AppRoutes.pages,

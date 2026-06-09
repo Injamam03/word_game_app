@@ -19,8 +19,16 @@ class ComputerPlayer {
     'desk','dew','dial','dice','dirt','dish','disk','dock','door','dose',
     'dove','down','draw','dream','dress','drift','drink','drive','drop','drum',
     // E
-    'each','earl','earn','ease','east','edge','else','emit','even','ever',
-    'evil','exam','exit','eyes','eagle','earth','eight','elect','enter','equal',
+    'ear','early','earn','earth','ease','east','easy','eat','edge','edit',
+    'education','effect','effort','egg','eight','either','elder','electric','elegant','element',
+    'eliminate','else','email','emerge','emotion','employ','employee','employer','empty','end',
+    'energy','engine','enjoy','enough','enter','entire','entry','environment','equal','equipment',
+    'error','escape','essay','essential','establish','estate','estimate','evaluate','even','evening',
+    'event','ever','every','everybody','everyone','everything','everywhere','evidence','evil','exact',
+    'examine','example','excellent','except','exchange','excite','excited','excitement','excuse','exercise',
+    'exist','exit','expand','expect','expense','expensive','experience','experiment','explain','explore',
+    'express','extend','external','extra','extreme','eye','eyebrow','eyelid','eyesight','ecosystem',
+    'editor','edition','efficient','effortless','elastic','elevator','elite','electron','elementary','evoke',
     // F
     'face','fact','fail','fair','fall','fame','farm','fast','fate','feed',
     'feel','feet','fell','felt','file','fill','film','find','fire','firm',
@@ -38,11 +46,35 @@ class ComputerPlayer {
     'hole','holy','home','hood','hook','hope','horn','host','hour','hunt',
     'hurt','hush','hype','horse','house','heart','heavy','honey','human',
     // I
-    'idea','idle','inch','iron','isle','item','icon','itch','ibis','igloo',
+    'ice','idea','ideal','identify','image','impact','import','important','improve','include',
+    'income','increase','index','indoor','industry','inform','information','initial','injury','inner',
+    'insect','inside','insight','install','instant','instead','insure','integer','intense','interest',
+    'internal','internet','interview','introduce','invite','iron','island','issue','item','itself',
+    'iceberg','icing','icon','ignore','illegal','illness','illustrate','imageable','imitate','immediate',
+    'immense','immune','impactful','imperial','implement','imply','importer','impression','improveable','incapable',
+    'incentive','incident','includeable','incorrect','increaseable','indicate','indirect','individual','industrial','influence',
+    'informal','infrastructure','ingredient','inhabit','injection','innovation','input','inspector','inspire','integrate',
+    'intelligent','intention','interaction','interestingly','interval','introducer','invest','investor','invoice','isolate',
     // J
-    'jack','jade','jail','join','joke','jump','just','jury','jade','jewel',
+    'jack','jacket','jam','jar','jaw','jean','jelly','jet','jewel','job',
+    'join','joint','joke','journal','journey','judge','juice','jump','junior','jury',
+    'just','justice','justify','jungle','junk','jail','jammed','jamming','jargon','javelin',
+    'jealous','jealousy','jeep','jingle','jitter','jog','jogger','jogging','joy','joyful',
+    'jubilee','judgement','judicial','juicy','jumbo','junction','juniority','juror','jurisdiction','justified',
+    'juggle','jug','juggler','jute','jovial','jolt','journalism','journalist','jigsaw','jinglebell',
+    'jumpy','jaded','jackpot','javelinist','jeering','jerk','jersey','jest','jester','jostle',
+    'jigsawed','jazz','jazzy','jetlag','jetty','jibe','jiffy','jinx','jobless','jointed',
+    'journeyed','joviality','jubilant','judging','juxtapose','juxtaposition','jailer','jaunt','jauntily','jeopardy',
     // K
-    'keen','keep','kick','kind','king','kiss','knot','know','kite','knife',
+    'kangaroo','karate','kayak','keen','keep','keeper','key','keyboard','kick','kid',
+    'kidnap','kill','kilo','kind','kindness','king','kingdom','kiss','kit','kitchen',
+    'kite','knee','kneel','knife','knock','know','knowledge','known','knot','knit',
+    'knotty','kernel','kettle','keyboardist','kidney','kingly','kinship','kitten','kilogram','kilometer',
+    'kitchenware','kingship','kindly','kinetic','kiosk','knightly','knitwear','knob','knuckle','knowledgeable',
+    'keystone','kickoff','kicker','kickback','kiddo','kindergarten','kingfish','kale','karma','ketchup',
+    'kettleful','keyhole','keel','kestrel','khaki','kiln','krypton','karyotype','kineticist','karyology',
+    'kendo','kook','kooky','kudos','kudo','kneecap','knitter','knoll','kowtow','keelhaul',
+    'kingpin','knotless','knockout','knapsack','kerosene','kaleidoscope','keypad','kickable','kindhearted','kinfolks',
     // L
     'lack','lake','lamp','land','lane','last','late','lawn','lead','leaf',
     'lean','leap','left','lend','lens','less','lick','life','lift','like',
@@ -57,8 +89,16 @@ class ComputerPlayer {
     'move','much','mule','muse','must','myth','magic','major','march','match',
     'metal','model','money','month','motor','mount','mouse','mouth','music',
     // N
-    'nail','name','navy','near','neck','need','nest','news','next','nice',
-    'nine','node','nose','note','noun','null','numb','nurse','night','noble',
+    'need','name','nail','nation','nature','near','neat','neck','needle','negative',
+    'network','never','new','news','next','nice','night','nine','noise','normal',
+    'north','nose','note','nothing','notice','noun','number','nurse','nervous','neutral',
+    'nuclear','nucleus','nuisance','nuance','novel','notebook','notify','nutrition','nutritious','navigate',
+    'navigation','native','nationalism','national','natural','naturally','necessity','necessary','negotiate','negotiation',
+    'newcomer','nickname','nightfall','nightlife','nightingale','nozzle','node','nod','nodule','notion',
+    'noticeable','notably','novice','novelty','nowhere','nowadays','nurture','nursing','numeral','numeric',
+    'numerically','navel','navy','nasal','nap','napkin','narrative','narrow','nationhood','nation-state',
+    'neatness','nervousness','neutralization','neutralize','newsletter','newsroom','newborn','nightclub','nonfiction','nonverbal',
+    'nonstop','nonprofit','nonsmoking','nonsense','nonviolent','northward','northwest','northeast','northerly','nourish',
     // O
     'oath','obey','odds','okay','once','only','open','oral','orb','oval',
     'oven','over','owed','owls','oak','ocean','offer','order','organ','other',
@@ -104,9 +144,28 @@ class ComputerPlayer {
     'tired','title','today','token','torch','total','touch','tough','tower','trace',
     'track','trade','trail','train','trait','trash','tread','treat','trend','trial',
     'trick','tried','troop','truck','truly','trunk','trust','truth','twice','twist',
+
+
     // U
-    'ugly','undo','unit','upon','urge','used','user','ultra','under','unite',
-    'until','upper','upset','urban','usage','utter',
+    'umbrella','unable','uncanny','uncle','uncover','underground','understand','understanding','undertake',
+    'underline','underneath','undoing','unemployment','unemployed','uniform','unify','union','unique','universe',
+    'university','unknown','unlimited','unlock','unlucky','update','upgrade','upload','urbanization',
+    'urgent','urgency','usable','useless','usual','usually','utensil','utility','utilization','utopia',
+    'utterance','uttermost','ultraviolet','uproar','uproot','upward','upwards','uphill','uprising','upstart',
+    'upstream','upsurge','upvote','upvotes','uploadable','uploader','upgrading','upgraded','updater','urbanize',
+    'urbanized','urbanity','urbane','urinary','urine','usurp','usurper','uterus','utilitarian','utility','utilizable',
+    'utopianism','utopist','usability','user-friendly','username','userbase','us','uncertainty','unclear',
+    'unclean','unconscious','uncontrollable','unaccountable','uncreative','uncomfortable','uncommonly',
+    'uncompleted','uncompetitive','unconnected','unconstitutional','uncooperative','uncorrected','uncultured',
+    'undeclared','undefined','underdeveloped','underutilized','underwritten','underinvested','underfunded',
+    'undisturbed','undivided','undoubted','undressed','undesired','undeserved','undeserving','undetected',
+    'undetermined','undisciplined','unafraid','unaltered','unchanged','uncharted','unchecked','unclog',
+    'unclogged','unconditionality','unconvincing','uncoordinated','undamaged','undecided','underexposed',
+    'underhanded','underinflated','underreported','underrepresented','undersupplied','underserved','undesirable',
+    'undetectable','undiscussed','undivisible','unearth','unearthed','unease','uneasy','uneventful','unforeseeable',
+    'unforeseen',
+
+
     // V
     'vacancy','vacation','vaccine','vacuum','vagabond','vague','valley','vanish',
     'vanishing','vanilla','vantage','vapor','vaporize','variable','variation','variety','various',
@@ -159,7 +218,11 @@ class ComputerPlayer {
     'yuppie','yuppies','youthquake','youthquakes','youthhood','youthhoods','yester',
     'yesternight','yesteryears','yieldless','yieldable','yawningly','yellowtail','yellowtails',
     'yowl','yowled','yowling','yucks','yucky','yuckier','yuckiest','yuckyish','yuppified','yuppifying',
-    'yippeeish','yonderly','yare','yarest','yardwork','yardworks','yardman','yardmen','yardbird','yardbirds','yachtman','yachtmen','yarnball','yarnballs','yawnful','yawnfully','yearnful','yearnfully','yogin','yogins','yogism','yodels','yammer','yammers','yammered','yammering','yaps','yappy','yappier','yappiest','yapster','yapsters','yowl','yowls','yowled','yowling','youthsome','youthness','yummylicious','yummyness','yippeeing','yippeeers'
+    'yippeeish','yonderly','yare','yarest','yardwork','yardworks','yardman','yardmen','yardbird','yardbirds',
+    'yachtman','yachtmen','yarnball','yarnballs','yawnful','yawnfully','yearnful','yearnfully','yogin','yogins',
+    'yogism','yodels','yammer','yammers','yammered','yammering','yaps','yappy','yappier','yappiest','yapster',
+    'yapsters','yowl','yowls','yowled','yowling','youthsome','youthness','yummylicious','yummyness','yippeeing',
+    'yippeeers'
 
 
     // Z

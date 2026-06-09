@@ -186,7 +186,7 @@ class _AvatarRow extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: List.generate(count, (i) {
         return Padding(
-          padding: EdgeInsets.only(right: i < count - 1 ? 6.w : 0),
+          padding: EdgeInsets.only(right: i < count - 1 ? 5.w : 0),
           child: _Avatar(
             bgColor: bgColor,
             iconColor: iconColor,

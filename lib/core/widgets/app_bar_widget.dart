@@ -46,14 +46,14 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 20.w),
-          child: CircleAvatar(
-            radius: 20.r,
-            backgroundColor: AppColors.surfaceContainerHighest,
-            child: Icon(Icons.person_rounded, color: AppColors.onSurfaceVariant, size: 20.sp),
-          ),
-        ),
+        // Padding(
+        //   padding: EdgeInsets.only(right: 20.w),
+        //   child: CircleAvatar(
+        //     radius: 20.r,
+        //     backgroundColor: AppColors.surfaceContainerHighest,
+        //     child: Icon(Icons.person_rounded, color: AppColors.onSurfaceVariant, size: 20.sp),
+        //   ),
+        // ),
       ],
     );
   }

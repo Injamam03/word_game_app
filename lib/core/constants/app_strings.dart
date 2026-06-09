@@ -64,7 +64,9 @@ class AppStrings {
   static const String settings = 'Settings';
 
   // Routes
-  static const String routeHome = '/';
+
+  static const String splashScreen = '/';
+  static const String routeHome = '/routeHome';
   static const String routePlayerSelection = '/player-selection';
   static const String routePlayerNames = '/player-names';
   static const String routeGamePlay = '/game-play';

@@ -24,7 +24,7 @@ class WordChainApp extends StatelessWidget {
           title: AppStrings.appName,
           // theme: AppTheme.lightTheme,
           debugShowCheckedModeBanner: false,
-          initialRoute: AppStrings.routeHome,
+          initialRoute: AppStrings.splashScreen,
           getPages: AppRoutes.pages,
         );
       },

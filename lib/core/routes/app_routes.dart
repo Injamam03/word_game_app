@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../features/authScreen/splashScreen/splashScreen.dart';
 import '../../features/home/view/home_screen.dart';
 import '../../features/player_selection/view/player_selection_screen.dart';
 import '../../features/player_selection/controller/player_selection_controller.dart';
@@ -15,6 +16,9 @@ class AppRoutes {
 
   static final List<GetPage> pages = [
     GetPage(
+      name: AppStrings.splashScreen,
+      page: () => const SplashScreen(),
+    ),GetPage(
       name: AppStrings.routeHome,
       page: () => const HomeScreen(),
     ),

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:word_game/core/constants/app_strings.dart';
 
 class WinnerController extends GetxController {
   late String winnerName;
@@ -27,10 +28,10 @@ class WinnerController extends GetxController {
   }
 
   void playAgain() {
-    Get.offAllNamed('/');
+    Get.offAllNamed(AppStrings.routeHome);
   }
 
   void goHome() {
-    Get.offAllNamed('/');
+    Get.offAllNamed(AppStrings.routeHome);
   }
 }

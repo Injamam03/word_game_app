@@ -96,8 +96,7 @@ class _WinnerScreenState extends State<WinnerScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Gap(48.h),
-                    _TrophySection(
-                        ctrl: ctrl, scaleAnimation: _scaleAnimation),
+                    _TrophySection(ctrl: ctrl, scaleAnimation: _scaleAnimation),
                     Gap(32.h),
                     _StatsGrid(ctrl: ctrl),
                     Gap(24.h),
@@ -221,14 +220,14 @@ class _TrophySection extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFFFFD700),
+                  AppColors.primary,
                   Color(0xFFFFA500),
                 ],
               ),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFFD700).withOpacity(0.5),
+                  color: AppColors.primary.withAlpha(200),
                   blurRadius: 40,
                   spreadRadius: 5,
                   offset: const Offset(0, 8),

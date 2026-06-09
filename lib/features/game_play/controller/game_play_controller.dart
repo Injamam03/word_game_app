@@ -74,14 +74,22 @@ class GamePlayController extends GetxController {
 
   // ─── Dictionary API Check ────────────────────────────────────────────────
   Future<bool> _isValidEnglishWord(String word) async {
+    final cleanWord = word.toLowerCase().trim();
+
+    // 1. Check local word bank first (Faster and ensures common words are recognized)
+    if (ComputerPlayer.wordBank.contains(cleanWord)) {
+      return true;
+    }
+
+    // 2. Fallback to Dictionary API
     try {
       final response = await http.get(
-        Uri.parse(
-            'https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}'),
+        Uri.parse('https://api.dictionaryapi.dev/api/v2/entries/en/$cleanWord'),
       ).timeout(const Duration(seconds: 5));
+      
       return response.statusCode == 200;
     } catch (_) {
-      // internet না থাকলে valid ধরে নেব
+      // On network error or timeout, assume valid to not break gameplay
       return true;
     }
   }

@@ -3,7 +3,7 @@ import 'dart:math';
 class ComputerPlayer {
   ComputerPlayer._();
 
-  static const List<String> _wordBank = [
+  static const List<String> wordBank = [
     // A
     'apple','ant','angel','arrow','animal','anchor','army','art','air','able',
     'age','acid','acre','ache','arch','area','arm','ash','ask','ace',
@@ -26,7 +26,7 @@ class ComputerPlayer {
     'feel','feet','fell','felt','file','fill','film','find','fire','firm',
     'fish','fist','flag','flat','flew','flip','flow','foam','fold','folk',
     'fond','font','food','fool','foot','ford','fork','form','fort','foul',
-    'four','free','from','fuel','full','fund','fuse','fuzz','frog','frost',
+    'four','free','from','fuel','full','fund','fuse','fuzz','frog','frost','for',
     // G
     'gain','game','gate','gave','gear','gift','girl','give','glad','glow',
     'glue','goal','goat','gold','golf','good','grab','gray','grew','grid',
@@ -108,44 +108,88 @@ class ComputerPlayer {
     'ugly','undo','unit','upon','urge','used','user','ultra','under','unite',
     'until','upper','upset','urban','usage','utter',
     // V
-    'vain','vale','vane','vary','vast','veil','vein','vent','verb','vest',
-    'view','vine','void','volt','vote','vow','valve','value','video','vigor',
-    'viral','virus','visit','vital','vivid','voice','voter',
+    'vacancy','vacation','vaccine','vacuum','vagabond','vague','valley','vanish',
+    'vanishing','vanilla','vantage','vapor','vaporize','variable','variation','variety','various',
+    'vastness','vault','vaulted','vegetable','vegetarian','vehicle','velocity','velvet',
+    'vendor','venture','venue','verbal','verdict','verge','verify','version',
+    'vertical','vessel','veteran','viable','vibrate','vibration','vice','vicinity',
+    'vicious','victory','viewer','viewing','viewpoint','vigil','vigilant','vigorous',
+    'virality','virtual','virtue','visual','vision','visionary','visitor','visualize',
+    'visualise','vocal','vocation','vocational','vodka','volatile','volatility','voting',
+    'vowel','voyage','vulnerable','vulnerability','vulture','vortex','volley','volleyball',
+    'volcanic','volcano','volume','volumetric','voiceless','vocalize','voicemail','vouch',
+    'voucher','vouching','vaulting','vent','ventilate','ventilation','vented','venting',
+    'ventral','venous','venal','vegan','veganism','vegetation','vegetative','vector',
+    'vending','viper',
     // W
-    'wade','wage','wake','walk','wall','wand','want','ward','warm','warn',
-    'warp','wart','wash','wave','weak','weal','wean','wear','weed','week',
-    'well','went','west','what','when','whip','whom','wide','wild','will',
-    'wilt','wind','wine','wing','wink','wire','wise','wish','with','wolf',
-    'wood','word','wore','work','worm','worn','wrap','wren','wrist','write',
-    'wake','watch','water','weigh','whale','wheat','wheel','where','which','while',
-    'white','whole','whose','wider','width','witch','woman','women','world','worry',
-    'worth','would','wound','wrath','wrong',
+    'waddle','wader','wading','waffle','wagon','waiver','wakeful','walkable',
+    'walkway','wallpaper','waltz','waltzed','waltzing','wander','wanderer','wandering',
+    'wanton','warden','warehouse','warfare','warlike','warmth','warning','warpable',
+    'warrior','wary','washer','washing','wassail','waste','wastage','watchful',
+    'watchdog','waterway','waterfall','waterproof','waterline','watershed','watt','watts',
+    'wax','waxed','waxing','waxy','weaken','weakness','wealthy','weapon',
+    'weaponry','wearable','weary','weasel','weather','weave','weaver','weaving',
+    'web','webinar','webcam','website','wedge','weeded','weeder','weekly',
+    'weird','weirdly','welder','welding','welfare','welling','western','westerns',
+    'wetland','wetness','whack','whacked','whaling','wharf','wheeze','wheeled',
+    'wheeler','whiff','whimper','whipcord','whiplash','whirlwind','whisper','whistle',
+    'whitener','whitening','wholesome','whopper','whorl','whosoever','wield','wiener',
+    'wiggle','wiggly','wildcard','willing',
+
+    //x
+    'x-ray','x-rays','xenon','xenia','xenial','xenolith','xenograft','xenophobia',
+    'xenophobic','xenogenesis','xerox','xeroxed','xeroxing','xeric','xerosis','xylem',
+    'xylophone','xylophonist','xylitol','xanthic','xanthan','xanthate','xanthine','xiphoid',
+    'x-axis','x-coordinate','x-intercept','x-linked','x-rated','x-factor','x-height','x-raying',
+    'x-rayed','xenon-like','xeniality','xanthoma','xanthomas','xanthophyll','xiphoidal','xylotomy',
+    'xylophonic','xylotomist','xiphoiditis','xerothermic','xerophyte','xerophytic','xanthocarpous','xerographic',
+    'xerographically','xenophile',
     // Y
-    'yard','yarn','yawn','year','yell','your','youth','yield',
+    'yard','yarn','yawn','year','yell','yellow','youth','yield','your','yours','yourself',
+    'yesterday','yet','yes','yoga','yogurt','yolk','young','younger','youngest','yearly',
+    'yearbook','yearn','yeast','yelp','yummy','yap','yacht','yam','yoke','yonder','yucca',
+    'yip','yodel','yelling','yellowing','yielding','youthful','yearning','yesteryear','yeses',
+    'yips','yodeling','yachts','yams','yogis','yoginis','yukata','yummier','yummiest','yardage',
+    'yardstick','yawner','yawners','yawned','yawing','yelled','yeller','yellers','yesterday’s',
+    'youths','youthfully','youthfulness','yoke','yoked','yoking','yokel','yokels','yonder',
+    'yippee','yapping','yapped','yapper','yappers','yellowed','yellowish','yellowishness',
+    'yearend','yearends','yearlong','yearlongs','yearling','yearlings','yearbooked','yearbooks',
+    'yachted','yachting','yachtsman','yachtsmen','yarned','yarning','yawnering','yawnerish',
+    'yodeler','yodelers','yodelled','yodelling','yogic','yogini','yoginis','yogurted','yummily',
+    'yuppie','yuppies','youthquake','youthquakes','youthhood','youthhoods','yester',
+    'yesternight','yesteryears','yieldless','yieldable','yawningly','yellowtail','yellowtails',
+    'yowl','yowled','yowling','yucks','yucky','yuckier','yuckiest','yuckyish','yuppified','yuppifying',
+    'yippeeish','yonderly','yare','yarest','yardwork','yardworks','yardman','yardmen','yardbird','yardbirds','yachtman','yachtmen','yarnball','yarnballs','yawnful','yawnfully','yearnful','yearnfully','yogin','yogins','yogism','yodels','yammer','yammers','yammered','yammering','yaps','yappy','yappier','yappiest','yapster','yapsters','yowl','yowls','yowled','yowling','youthsome','youthness','yummylicious','yummyness','yippeeing','yippeeers'
+
+
     // Z
-    'zeal','zero','zinc','zone','zoom','zebra',
+    'zany','zap','zapped','zapper','zapping','zeal','zealous','zebra',
+    'zebras','zero','zeroes','zeros','zeroed','zeroing','zest','zesty',
+    'zigzag','zigzags','zigzagged','zigzagging','zinc','zip','zips','zipped',
+    'zipper','zippers','zipping','zone','zones','zoned','zoning','zoo',
+    'zoos','zoom','zooms','zoomed','zooming','zodiac','zombie','zombies',
+    'zonal','zoning','zen','zenith','zephyr','zillion','zillions','zinger',
+    'zingers','zinnia','zinnias','zircon','zither','zithers','zloty','zlotys',
+    'zookeeper','zookeepers','zoology','zoologist','zoologists','zoological','zooplankton','zucchini',
+    'zucchinis','zygote','zygotes','zebrafish','zeitgeist','zeppelin','zeppelins','zestful',
+    'zestfully','zestiness','zippy','zippier','zippiest','zincs','zincs','zincing',
+    'zoned','zoner','zoners','zonal','zonally','zombie-like','zoomer','zoomers',
+    'zoomable','zoomed-in','zoonotic','zoonosis','zymurgy','zymology','zymotic','zymogen',
+    'zorilla','zorillas','zebu','zebus'
   ];
-
-
-
-
-
-
-
 
   static String generateWord(String startLetter, List<String> usedWords) {
     final letter = startLetter.toLowerCase().trim();
     if (letter.isEmpty) {
-      // যদি কোনো letter না থাকে random একটা দাও
       final rand = Random();
-      final available = _wordBank
+      final available = wordBank
           .where((w) => !usedWords.any((u) => u.toLowerCase() == w))
           .toList();
       if (available.isEmpty) return '';
       return available[rand.nextInt(available.length)];
     }
 
-    final filtered = _wordBank
+    final filtered = wordBank
         .where((w) =>
     w.startsWith(letter) &&
         !usedWords.any((u) => u.toLowerCase() == w))

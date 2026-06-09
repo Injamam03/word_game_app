@@ -15,14 +15,14 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: const AppBarWidget(),
+      // appBar: const AppBarWidget(),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Gap(32.h),
+              Gap(120.h),
 
               _HeaderSection(),
               Gap(32.h),
@@ -157,7 +157,7 @@ class _RuleItem extends StatelessWidget {
         ),
         Gap(12.w),
         Expanded(
-          child: CustomText.bodySm(
+          child: CustomText.bodyMd(
             text,
             color: AppColors.onSurfaceVariant,
             height: 1.5,

@@ -156,14 +156,10 @@ class _AvatarRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color bgColor =
-    isSelected ? AppColors.primary : AppColors.primaryFixed;
-    final Color iconColor =
-    isSelected ? AppColors.onPrimary : AppColors.primary;
-    final Color compColor =
-    isSelected ? AppColors.secondary : AppColors.secondaryContainer;
-    final Color compIconColor =
-    isSelected ? AppColors.onSecondary : AppColors.onSecondaryContainer;
+    final Color bgColor = isSelected ? AppColors.primary : AppColors.primaryFixed;
+    final Color iconColor = isSelected ? AppColors.onPrimary : AppColors.primary;
+    final Color compColor = isSelected ? AppColors.secondary : AppColors.secondaryContainer;
+    final Color compIconColor = isSelected ? AppColors.onSecondary : AppColors.onSecondaryContainer;
 
     // Computer vs Human
     if (count == -1) {
@@ -176,13 +172,15 @@ class _AvatarRow extends StatelessWidget {
               color: isSelected ? AppColors.primary : AppColors.outline,
               size: 16.sp),
           Gap(6.w),
-          _Avatar(bgColor: compColor, iconColor: compIconColor, icon: Icons.smart_toy_rounded),
+          _Avatar(bgColor: compColor, iconColor: compIconColor, icon: Icons.laptop_chromebook_sharp),
         ],
       );
     }
 
     // 2, 3, 4 players — show person avatars with spacing
     return Row(
+
+
       mainAxisSize: MainAxisSize.min,
       children: List.generate(count, (i) {
         return Padding(

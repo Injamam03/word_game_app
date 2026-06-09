@@ -326,7 +326,7 @@ class _PlayerWordsArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double colWidth = 110.w;
+    final double colWidth = 100.w;
     final double totalWidth = ctrl.players.length * colWidth;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double actualWidth = totalWidth < screenWidth ? screenWidth : totalWidth;
@@ -394,7 +394,7 @@ class _PlayerWordColumn extends StatelessWidget {
               );
             }
             return ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
               itemCount: player.myWords.length,
               itemBuilder: (_, i) {
                 final word = player.myWords[player.myWords.length - 1 - i];

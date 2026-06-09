@@ -24,18 +24,23 @@ class GamePlayScreen extends StatelessWidget {
             // ✅ horizontal scroll player row
             _PlayerRow(ctrl: ctrl),
             _TurnIndicator(ctrl: ctrl),
+            
+            // Error Banner Obx
             Obx(() {
-              final show = ctrl.showError.value; // Explicit access
+              final show = ctrl.showError.value;
+              final _ = ctrl.errorMessage.value; // Explicit access
               return show ? _ErrorBanner(ctrl: ctrl) : const SizedBox.shrink();
             }),
+
+            // Computer Word Banner Obx
             Obx(() {
-              // Ensure observable is accessed even if other conditions are false
               final computerWord = ctrl.computerLastWord.value;
               final hasComputer = ctrl.players.any((p) => p.isComputer);
               return (hasComputer && computerWord.isNotEmpty)
                   ? _ComputerWordBanner(ctrl: ctrl)
                   : const SizedBox.shrink();
             }),
+
             // ✅ player word columns — horizontal scroll
             Expanded(
               child: _PlayerWordsArea(ctrl: ctrl),
@@ -88,7 +93,6 @@ class _GameAppBar extends StatelessWidget implements PreferredSizeWidget {
               borderRadius: BorderRadius.circular(20.r),
             ),
             child: Obx(() {
-              // Explicitly access the Rx variable used inside the getter
               final _ = ctrl.elapsedSeconds.value; 
               final time = ctrl.formattedTime;
               return Row(
@@ -178,7 +182,7 @@ class _PlayerCard extends StatelessWidget {
                     Icon(Icons.play_arrow_rounded,
                         color: AppColors.primary, size: 11.sp),
                   Flexible(
-                    child: CustomText.labelSm(
+                    child: CustomText.bodyMd(
                       player.name,
                       color: isActive
                           ? AppColors.primary
@@ -192,8 +196,8 @@ class _PlayerCard extends StatelessWidget {
                 ],
               ),
               Gap(3.h),
-              CustomText.labelSm(
-                '$wordCount ${wordCount == 1 ? 'word' : 'words'}',
+              CustomText.labelLg(
+                '$wordCount ${wordCount == 1 ? "word" : "words"}',
                 color: isActive ? AppColors.primary : AppColors.outline,
                 fontWeight: FontWeight.w600,
                 textAlign: TextAlign.center,
@@ -215,7 +219,6 @@ class _TurnIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      // Explicitly access the index to register dependency
       final index = ctrl.currentPlayerIndex.value;
       final currentPlayerName = ctrl.players[index].name;
       return Container(
@@ -265,7 +268,7 @@ class _ErrorBanner extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.errorContainer,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.error.withOpacity(0.3)),
+        border: Border.all(color: AppColors.error.withAlpha(60)),
       ),
       child: Row(
         children: [
@@ -296,7 +299,7 @@ class _ComputerWordBanner extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: AppColors.secondaryContainer.withOpacity(0.3),
+        color: AppColors.secondaryContainer.withAlpha(60),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: AppColors.secondaryContainer),
       ),
@@ -308,7 +311,9 @@ class _ComputerWordBanner extends StatelessWidget {
           CustomText.bodySm('Computer played: ',
               color: AppColors.onSurfaceVariant),
           CustomText.bodyMd(
-            ctrl.computerLastWord.value.toUpperCase(),
+            ctrl.computerLastWord.value.isNotEmpty
+                ? "${ctrl.computerLastWord.value[0].toUpperCase()}${ctrl.computerLastWord.value.substring(1).toLowerCase()}"
+                : ctrl.computerLastWord.value,
             color: AppColors.secondary,
             fontWeight: FontWeight.w700,
           ),
@@ -373,7 +378,7 @@ class _PlayerWordColumn extends StatelessWidget {
               bottom: BorderSide(color: AppColors.primary, width: 2),
             ),
           ),
-          child: CustomText.labelSm(
+          child: CustomText.bodyMd(
             player.name,
             color: AppColors.onSurface,
             fontWeight: FontWeight.w700,
@@ -383,38 +388,42 @@ class _PlayerWordColumn extends StatelessWidget {
         ),
         Flexible(
           child: Obx(() {
-            if (player.myWords.isEmpty) {
+            final wordList = player.myWords;
+            if (wordList.isEmpty) {
               return Padding(
                 padding: EdgeInsets.only(top: 12.h),
                 child: CustomText.labelSm(
-                  '—',
+                  "—",
                   color: AppColors.outline,
                   textAlign: TextAlign.center,
                 ),
               );
             }
             return ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-              itemCount: player.myWords.length,
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              itemCount: wordList.length,
               itemBuilder: (_, i) {
-                final word = player.myWords[player.myWords.length - 1 - i];
+                final word = wordList[wordList.length - 1 - i];
                 final isLatest = i == 0;
                 return Container(
+                  height: 35.h,
                   margin: EdgeInsets.only(bottom: 6.h),
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
                   decoration: BoxDecoration(
                     color: isLatest
                         ? AppColors.primaryFixed
                         : AppColors.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(10.r),
                     border: Border.all(
                       color: isLatest
                           ? AppColors.primary
                           : AppColors.outlineVariant,
                     ),
                   ),
-                  child: CustomText.labelSm(
-                    word.toUpperCase(),
+                  child: CustomText.bodyMd(
+                    word.isNotEmpty
+                        ? "${word[0].toUpperCase()}${word.substring(1).toLowerCase()}"
+                        : word,
                     color: isLatest ? AppColors.primary : AppColors.onSurface,
                     fontWeight: isLatest ? FontWeight.w700 : FontWeight.w500,
                     textAlign: TextAlign.center,
@@ -458,7 +467,7 @@ class _RequiredLetterHint extends StatelessWidget {
               ),
               child: Center(
                 child: CustomText.headlineSm(
-                  requiredLetter,
+                  requiredLetter.toUpperCase(),
                   color: AppColors.onPrimary,
                   fontWeight: FontWeight.w800,
                 ),
@@ -482,18 +491,18 @@ class _InputArea extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Obx(() {
-        // Explicitly access the index to register dependency
         final index = ctrl.currentPlayerIndex.value;
         final isComputerTurn = ctrl.players[index].isComputer;
         final isValidating = ctrl.isValidating.value;
+        
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomTextField(
               controller: ctrl.wordController,
               hintText: isComputerTurn
-                  ? 'Computer is thinking...'
-                  : 'Type your word...',
+                  ? "Computer is thinking..."
+                  : "Type your word...",
               enabled: !isComputerTurn && !isValidating,
               textCapitalization: TextCapitalization.words,
               onSubmitted: (_) => ctrl.submitWord(),
@@ -517,7 +526,7 @@ class _InputArea extends StatelessWidget {
                   flex: 2,
                   child: CustomButton(
                     label: isValidating
-                        ? 'Checking...'
+                        ? "Checking..."
                         : AppStrings.submitWord,
                     onTap: isComputerTurn || isValidating
                         ? null

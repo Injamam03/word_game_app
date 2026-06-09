@@ -221,7 +221,12 @@ class _TrophySection extends StatelessWidget {
                 end: Alignment.bottomRight,
                 colors: [
                   AppColors.primary,
+                  AppColors.primary,
                   Color(0xFFFFA500),
+                  AppColors.primary,
+                  Color(0xFFFFA500),
+                  AppColors.primary,
+                  AppColors.primary,
                 ],
               ),
               shape: BoxShape.circle,
@@ -252,6 +257,19 @@ class _TrophySection extends StatelessWidget {
           child: CustomText.displayLg(
             AppStrings.congratulations,
             color: AppColors.white,
+            // gradient: const LinearGradient(
+            //   begin: Alignment.topLeft,
+            //   end: Alignment.bottomRight,
+            //   colors: [
+            //     AppColors.primary,
+            //     AppColors.primary,
+            //     Color(0xFFFFA500),
+            //     AppColors.primary,
+            //     Color(0xFFFFA500),
+            //     AppColors.primary,
+            //     AppColors.primary,
+            //   ],
+            // ),
             fontWeight: FontWeight.w800,
             letterSpacing: -0.5,
             textAlign: TextAlign.center,

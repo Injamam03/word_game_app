@@ -164,8 +164,8 @@ class _PlayerCard extends StatelessWidget {
                 : AppColors.surfaceContainer,
             borderRadius: BorderRadius.circular(12.r),
             border: Border.all(
-              color: isActive ? AppColors.primary : AppColors.transparent,
-              width: isActive ? 2 : 0,
+              color: isActive ? AppColors.primary : AppColors.primaryContainer,
+              width: isActive ? 2 : 1,
             ),
           ),
           child: Column(

@@ -45,13 +45,18 @@ class PlayerSelectionController extends GetxController {
 
   void goNext() {
     if (!canProceed) return;
-    Get.toNamed(
-      AppStrings.routePlayerNames,
-      arguments: {
-        'playerCount': playerCount,
-        'isComputer': isComputer,
-      },
-    );
+    
+    if (isComputer) {
+      Get.toNamed(AppStrings.routeLevelSelection);
+    } else {
+      Get.toNamed(
+        AppStrings.routePlayerNames,
+        arguments: {
+          'playerCount': playerCount,
+          'isComputer': isComputer,
+        },
+      );
+    }
   }
 
   @override

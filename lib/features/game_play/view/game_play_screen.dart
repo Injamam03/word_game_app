@@ -18,6 +18,8 @@ class GamePlayScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: _GameAppBar(ctrl: ctrl),
+      // Ensures UI resizes for keyboard instead of overflowing
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Column(
           children: [
@@ -25,12 +27,9 @@ class GamePlayScreen extends StatelessWidget {
             _PlayerRow(ctrl: ctrl),
             _TurnIndicator(ctrl: ctrl),
             
-            // Error Banner Obx
-            Obx(() {
-              final show = ctrl.showError.value;
-              final _ = ctrl.errorMessage.value; // Explicit access
-              return show ? _ErrorBanner(ctrl: ctrl) : const SizedBox.shrink();
-            }),
+            // NOTE: UI Error Banner removed to prevent vertical layout shifts 
+            // and RenderFlex overflows when keyboard is open.
+            // Errors are now handled exclusively by floating Snackbars.
 
             // Computer Word Banner Obx
             Obx(() {
@@ -47,7 +46,7 @@ class GamePlayScreen extends StatelessWidget {
             ),
             _RequiredLetterHint(ctrl: ctrl),
             _InputArea(ctrl: ctrl),
-            Gap(24.h),
+            Gap(16.h),
           ],
         ),
       ),
@@ -182,7 +181,7 @@ class _PlayerCard extends StatelessWidget {
                     Icon(Icons.play_arrow_rounded,
                         color: AppColors.primary, size: 11.sp),
                   Flexible(
-                    child: CustomText.bodyMd(
+                    child: CustomText.labelSm(
                       player.name,
                       color: isActive
                           ? AppColors.primary
@@ -196,7 +195,7 @@ class _PlayerCard extends StatelessWidget {
                 ],
               ),
               Gap(3.h),
-              CustomText.labelLg(
+              CustomText.labelSm(
                 '$wordCount ${wordCount == 1 ? "word" : "words"}',
                 color: isActive ? AppColors.primary : AppColors.outline,
                 fontWeight: FontWeight.w600,
@@ -251,39 +250,6 @@ class _TurnIndicator extends StatelessWidget {
         ),
       );
     });
-  }
-}
-
-// ─── Error Banner ─────────────────────────────────────────────────────────────
-
-class _ErrorBanner extends StatelessWidget {
-  final GamePlayController ctrl;
-  const _ErrorBanner({required this.ctrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: AppColors.errorContainer,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.error.withAlpha(60)),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.warning_rounded, color: AppColors.error, size: 18.sp),
-          Gap(8.w),
-          Expanded(
-            child: CustomText.bodySm(
-              ctrl.errorMessage.value,
-              color: AppColors.error,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 
@@ -378,7 +344,7 @@ class _PlayerWordColumn extends StatelessWidget {
               bottom: BorderSide(color: AppColors.primary, width: 2),
             ),
           ),
-          child: CustomText.bodyMd(
+          child: CustomText.labelSm(
             player.name,
             color: AppColors.onSurface,
             fontWeight: FontWeight.w700,
@@ -400,7 +366,7 @@ class _PlayerWordColumn extends StatelessWidget {
               );
             }
             return ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
               itemCount: wordList.length,
               itemBuilder: (_, i) {
                 final word = wordList[wordList.length - 1 - i];
@@ -420,7 +386,7 @@ class _PlayerWordColumn extends StatelessWidget {
                           : AppColors.outlineVariant,
                     ),
                   ),
-                  child: CustomText.bodyMd(
+                  child: CustomText.labelSm(
                     word.isNotEmpty
                         ? "${word[0].toUpperCase()}${word.substring(1).toLowerCase()}"
                         : word,

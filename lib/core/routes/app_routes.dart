@@ -3,6 +3,8 @@ import '../../features/authScreen/splashScreen/splashScreen.dart';
 import '../../features/home/view/home_screen.dart';
 import '../../features/player_selection/view/player_selection_screen.dart';
 import '../../features/player_selection/controller/player_selection_controller.dart';
+import '../../features/level_selection/view/level_selection_screen.dart';
+import '../../features/level_selection/controller/level_selection_controller.dart';
 import '../../features/player_names/view/player_names_screen.dart';
 import '../../features/player_names/controller/player_names_controller.dart';
 import '../../features/game_play/view/game_play_screen.dart';
@@ -18,7 +20,8 @@ class AppRoutes {
     GetPage(
       name: AppStrings.splashScreen,
       page: () => const SplashScreen(),
-    ),GetPage(
+    ),
+    GetPage(
       name: AppStrings.routeHome,
       page: () => const HomeScreen(),
     ),
@@ -27,6 +30,13 @@ class AppRoutes {
       page: () => const PlayerSelectionScreen(),
       binding: BindingsBuilder(() {
         Get.lazyPut(() => PlayerSelectionController());
+      }),
+    ),
+    GetPage(
+      name: AppStrings.routeLevelSelection,
+      page: () => const LevelSelectionScreen(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => LevelSelectionController());
       }),
     ),
     GetPage(

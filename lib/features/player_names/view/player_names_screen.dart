@@ -25,15 +25,21 @@ class PlayerNamesScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gap(24.h),
-              CustomText.headlineLg(
-                AppStrings.setupGame,
-                color: AppColors.onBackground,
-                fontWeight: FontWeight.w700,
+              Align(
+                alignment: Alignment.center,
+                child: CustomText.headlineLg(
+                  AppStrings.setupGame,
+                  color: AppColors.onBackground,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               Gap(8.h),
-              CustomText.bodyLg(
-                AppStrings.whoIsJoining,
-                color: AppColors.onSurfaceVariant,
+              Align(
+                alignment: Alignment.center,
+                child: CustomText.bodyLg(
+                  AppStrings.whoIsJoining,
+                  color: AppColors.onSurfaceVariant,
+                ),
               ),
               Gap(24.h),
               Expanded(
@@ -52,10 +58,10 @@ class PlayerNamesScreen extends StatelessWidget {
                 ),
               ),
               Gap(16.h),
-              _ClassicModeBadge(ctrl: ctrl),
+              _ModeBadge(ctrl: ctrl),
               Gap(16.h),
               Obx(
-                    () => CustomButton(
+                () => CustomButton(
                   label: AppStrings.startGame,
                   onTap: ctrl.isFormValid.value ? ctrl.startGame : null,
                   trailing: Icon(
@@ -115,15 +121,15 @@ class _PlayerNameField extends StatelessWidget {
             child: Center(
               child: isComputer
                   ? Icon(
-                Icons.smart_toy_rounded,
-                color: AppColors.onSecondaryContainer,
-                size: 18.sp,
-              )
+                      Icons.smart_toy_rounded,
+                      color: AppColors.onSecondaryContainer,
+                      size: 20.sp,
+                    )
                   : CustomText.bodyMd(
-                '${index + 1}',
-                color: AppColors.primary,
-                fontWeight: FontWeight.w700,
-              ),
+                      '${index + 1}',
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
             ),
           ),
           Gap(12.w),
@@ -141,8 +147,7 @@ class _PlayerNameField extends StatelessWidget {
                 hintText: isComputer
                     ? AppStrings.computerName
                     : AppStrings.enterName,
-                hintStyle:
-                TextStyle(color: AppColors.outline, fontSize: 16.sp),
+                hintStyle: TextStyle(color: AppColors.outline, fontSize: 16.sp),
                 border: InputBorder.none,
               ),
             ),
@@ -166,12 +171,17 @@ class _PlayerNameField extends StatelessWidget {
   }
 }
 
-class _ClassicModeBadge extends StatelessWidget {
+class _ModeBadge extends StatelessWidget {
   final PlayerNamesController ctrl;
-  const _ClassicModeBadge({required this.ctrl});
+  const _ModeBadge({required this.ctrl});
 
   @override
   Widget build(BuildContext context) {
+    final bool isLevelMode = ctrl.selectedLevel != null;
+    final String modeText = isLevelMode
+        ? '${AppStrings.level} ${ctrl.selectedLevel.toString().padLeft(2, '0')} • vs Computer'
+        : 'Classic Mode • ${ctrl.playerCount} Players';
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
@@ -181,12 +191,16 @@ class _ClassicModeBadge extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.sports_esports_rounded, color: AppColors.primary, size: 16.sp),
+          Icon(
+            isLevelMode ? Icons.auto_awesome_rounded : Icons.sports_esports_rounded,
+            color: AppColors.primary,
+            size: 18.sp,
+          ),
           Gap(8.w),
           CustomText.labelLg(
-            'Classic Mode • ${ctrl.playerCount} Players',
+            modeText,
             color: AppColors.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
           ),
         ],
       ),

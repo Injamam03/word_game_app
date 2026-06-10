@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/services/level_service.dart';
 import '../../../core/utils/computer_player.dart';
 import '../../../core/utils/word_validator.dart';
 
@@ -14,7 +16,7 @@ class PlayerModel {
   RxBool isEliminated = false.obs;
   RxBool isActive = false.obs;
   RxList<String> myWords = <String>[].obs;
-  RxInt wordCount = 0.obs; // ✅ word count
+  RxInt wordCount = 0.obs;
 
   PlayerModel({required this.name, this.isComputer = false});
 }
@@ -22,6 +24,8 @@ class PlayerModel {
 class GamePlayController extends GetxController {
   late List<PlayerModel> players;
   late bool hasComputer;
+  int? selectedLevel;
+  int? targetWordCount;
 
   final RxList<String> usedWords = <String>[].obs;
   final RxString lastWord = ''.obs;
@@ -42,6 +46,11 @@ class GamePlayController extends GetxController {
     final names =
         args['playerNames'] as List<dynamic>? ?? ['Player 1', 'Player 2'];
     hasComputer = args['isComputer'] as bool? ?? false;
+    selectedLevel = args['level'] as int?;
+
+    if (selectedLevel != null) {
+      targetWordCount = LevelService.getRequiredWords(selectedLevel!);
+    }
 
     players = names
         .map((name) => PlayerModel(
@@ -72,47 +81,36 @@ class GamePlayController extends GetxController {
   List<PlayerModel> get activePlayers =>
       players.where((p) => !p.isEliminated.value).toList();
 
-  // ─── Dictionary API Check ────────────────────────────────────────────────
   Future<bool> _isValidEnglishWord(String word) async {
     final cleanWord = word.toLowerCase().trim();
-
-    // 1. Check local word bank first (Faster and ensures common words are recognized)
     if (ComputerPlayer.wordBank.contains(cleanWord)) {
       return true;
     }
-
-    // 2. Fallback to Dictionary API
     try {
       final response = await http.get(
         Uri.parse('https://api.dictionaryapi.dev/api/v2/entries/en/$cleanWord'),
       ).timeout(const Duration(seconds: 5));
-      
       return response.statusCode == 200;
     } catch (_) {
-      // On network error or timeout, assume valid to not break gameplay
       return true;
     }
   }
 
-  // ─── Submit Word ─────────────────────────────────────────────────────────
   Future<void> submitWord() async {
     final word = wordController.text.trim().toLowerCase();
     if (word.isEmpty) return;
 
-    // Duplicate check
     if (WordValidator.isDuplicate(word, usedWords)) {
       _showError(AppStrings.wordAlreadyUsed);
       return;
     }
 
-    // Chain check
     if (usedWords.isNotEmpty &&
         !WordValidator.isValidChain(word, lastWord.value)) {
       _showError('Word must start with letter "${requiredLetter.value}"');
       return;
     }
 
-    // Dictionary check
     isValidating.value = true;
     final isValid = await _isValidEnglishWord(word);
     isValidating.value = false;
@@ -129,18 +127,52 @@ class GamePlayController extends GetxController {
     usedWords.add(word);
     lastWord.value = word;
     requiredLetter.value = WordValidator.getRequiredStartLetter(word);
-    currentPlayer.score.value += word.length * 10;
-    currentPlayer.myWords.add(word);
-    currentPlayer.wordCount.value++; // ✅ এই line add করো
+    
+    final player = currentPlayer;
+    player.score.value += word.length * 10;
+    player.myWords.add(word);
+    player.wordCount.value++;
+
     wordController.clear();
     showError.value = false;
     errorMessage.value = '';
+
+    // Check for level completion
+    if (selectedLevel != null && !player.isComputer && targetWordCount != null) {
+      if (player.wordCount.value >= targetWordCount!) {
+        _endGame(levelCompleted: true);
+        return;
+      }
+    }
+
     _nextTurn();
   }
 
   void _showError(String msg) {
     errorMessage.value = msg;
     showError.value = true;
+
+    // Fix: Remove 'behavior' and use margin + barBlur to make it float in GetX
+    Get.closeAllSnackbars();
+    Get.snackbar(
+      'Notice',
+      msg,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: AppColors.errorContainer,
+      colorText: AppColors.error,
+      margin: EdgeInsets.all(20.w),
+      duration: const Duration(seconds: 3),
+      icon: const Icon(Icons.warning_rounded, color: AppColors.error),
+      shouldIconPulse: true,
+      barBlur: 10,
+    );
+
+    // Automatically hide error state after snackbar duration to prevent UI clutter
+    Future.delayed(const Duration(seconds: 3), () {
+      if (errorMessage.value == msg) {
+        showError.value = false;
+      }
+    });
   }
 
   void stopPlayer() {
@@ -179,7 +211,7 @@ class GamePlayController extends GetxController {
           if (word.isEmpty) {
             stopPlayer();
           } else {
-            computerLastWord.value = word; // ✅ computer word দেখানোর জন্য
+            computerLastWord.value = word;
             _acceptWord(word);
           }
         }
@@ -187,10 +219,14 @@ class GamePlayController extends GetxController {
     }
   }
 
-  void _endGame() {
+  void _endGame({bool levelCompleted = false}) {
     _timer?.cancel();
     final winner =
     activePlayers.isNotEmpty ? activePlayers.first : players.first;
+    
+    // User wins a level only if target reached. If computer eliminates them, user loses level.
+    bool userWonLevel = levelCompleted && !winner.isComputer;
+
     Get.toNamed(
       AppStrings.routeWinner,
       arguments: {
@@ -198,6 +234,9 @@ class GamePlayController extends GetxController {
         'winnerScore': winner.score.value,
         'usedWords': usedWords.toList(),
         'duration': formattedTime,
+        'level': selectedLevel,
+        'levelCompleted': userWonLevel,
+        'totalWords': winner.wordCount.value,
       },
     );
   }

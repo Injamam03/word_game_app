@@ -30,18 +30,10 @@ class _WinnerScreenState extends State<WinnerScreen>
   void initState() {
     super.initState();
 
-    // ─── Confetti Controllers ───
-    _confettiLeft = ConfettiController(
-        duration: const Duration(seconds: 6))
-      ..play();
-    _confettiRight = ConfettiController(
-        duration: const Duration(seconds: 6))
-      ..play();
-    _confettiCenter = ConfettiController(
-        duration: const Duration(seconds: 4))
-      ..play();
+    _confettiLeft = ConfettiController(duration: const Duration(seconds: 6))..play();
+    _confettiRight = ConfettiController(duration: const Duration(seconds: 6))..play();
+    _confettiCenter = ConfettiController(duration: const Duration(seconds: 4))..play();
 
-    // ─── Trophy Scale Animation ───
     _scaleController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -51,7 +43,6 @@ class _WinnerScreenState extends State<WinnerScreen>
       curve: Curves.elasticOut,
     );
 
-    // ─── Fade Animation ───
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
@@ -61,7 +52,6 @@ class _WinnerScreenState extends State<WinnerScreen>
       curve: Curves.easeIn,
     );
 
-    // Sequence: fade in → scale trophy
     _fadeController.forward();
     Future.delayed(const Duration(milliseconds: 200), () {
       _scaleController.forward();
@@ -86,7 +76,6 @@ class _WinnerScreenState extends State<WinnerScreen>
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          // ─── Main Content ───
           SafeArea(
             child: FadeTransition(
               opacity: _fadeAnimation,
@@ -103,10 +92,13 @@ class _WinnerScreenState extends State<WinnerScreen>
                     _RecentWords(ctrl: ctrl),
                     Gap(32.h),
                     CustomButton(
-                      label: AppStrings.playAgain,
+                      label: ctrl.levelCompleted ? AppStrings.next : AppStrings.playAgain,
                       onTap: ctrl.playAgain,
-                      trailing: Icon(Icons.replay_rounded,
-                          color: AppColors.onPrimary, size: 20.sp),
+                      trailing: Icon(
+                        ctrl.levelCompleted ? Icons.arrow_forward_rounded : Icons.replay_rounded,
+                        color: AppColors.onPrimary,
+                        size: 20.sp,
+                      ),
                     ),
                     Gap(12.h),
                     CustomButton(
@@ -121,53 +113,34 @@ class _WinnerScreenState extends State<WinnerScreen>
             ),
           ),
 
-          // ─── Confetti Left ───
           Align(
             alignment: Alignment.topLeft,
             child: ConfettiWidget(
               confettiController: _confettiLeft,
-              blastDirection: 0.5, // right-down diagonal
+              blastDirection: 0.5,
               emissionFrequency: 0.05,
               numberOfParticles: 20,
               maxBlastForce: 30,
               minBlastForce: 10,
               gravity: 0.2,
-              colors: const [
-                AppColors.primary,
-                AppColors.secondary,
-                AppColors.primaryFixed,
-                AppColors.secondaryContainer,
-                Color(0xFFFFD700),
-                Color(0xFFFF6B6B),
-                Color(0xFF4ECDC4),
-              ],
+              colors: const [AppColors.primary, AppColors.secondary, Color(0xFFFFD700)],
             ),
           ),
 
-          // ─── Confetti Right ───
           Align(
             alignment: Alignment.topRight,
             child: ConfettiWidget(
               confettiController: _confettiRight,
-              blastDirection: 2.5, // left-down diagonal
+              blastDirection: 2.5,
               emissionFrequency: 0.05,
               numberOfParticles: 20,
               maxBlastForce: 30,
               minBlastForce: 10,
               gravity: 0.2,
-              colors: const [
-                AppColors.primary,
-                AppColors.secondary,
-                AppColors.primaryFixed,
-                AppColors.secondaryContainer,
-                Color(0xFFFFD700),
-                Color(0xFFFF6B6B),
-                Color(0xFF4ECDC4),
-              ],
+              colors: const [AppColors.primary, AppColors.secondary, Color(0xFFFFD700)],
             ),
           ),
 
-          // ─── Confetti Center (burst) ───
           Align(
             alignment: const Alignment(0, -0.3),
             child: ConfettiWidget(
@@ -178,14 +151,7 @@ class _WinnerScreenState extends State<WinnerScreen>
               maxBlastForce: 50,
               minBlastForce: 20,
               gravity: 0.3,
-              colors: const [
-                AppColors.primary,
-                AppColors.secondary,
-                Color(0xFFFFD700),
-                Color(0xFFFF6B6B),
-                Color(0xFF4ECDC4),
-                Color(0xFFFF9F43),
-              ],
+              colors: const [AppColors.primary, AppColors.secondary, Color(0xFFFFD700)],
             ),
           ),
         ],
@@ -193,8 +159,6 @@ class _WinnerScreenState extends State<WinnerScreen>
     );
   }
 }
-
-// ─── Trophy Section ───────────────────────────────────────────────────────────
 
 class _TrophySection extends StatelessWidget {
   final WinnerController ctrl;
@@ -209,7 +173,6 @@ class _TrophySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // ─── Animated Trophy ───
         ScaleTransition(
           scale: scaleAnimation,
           child: Container(
@@ -219,20 +182,12 @@ class _TrophySection extends StatelessWidget {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  AppColors.primary,
-                  AppColors.primary,
-                  Color(0xFFFFA500),
-                  AppColors.primary,
-                  Color(0xFFFFA500),
-                  AppColors.primary,
-                  AppColors.primary,
-                ],
+                colors: [AppColors.primary, Color(0xFFFFA500), AppColors.primary],
               ),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withAlpha(200),
+                  color: AppColors.primary.withOpacity(0.4),
                   blurRadius: 40,
                   spreadRadius: 5,
                   offset: const Offset(0, 8),
@@ -240,7 +195,7 @@ class _TrophySection extends StatelessWidget {
               ],
             ),
             child: Icon(
-              Icons.emoji_events_rounded,
+              ctrl.levelCompleted ? Icons.military_tech_rounded : Icons.emoji_events_rounded,
               color: AppColors.white,
               size: 60.sp,
             ),
@@ -249,67 +204,43 @@ class _TrophySection extends StatelessWidget {
 
         Gap(24.h),
 
-        // ─── Congratulations Text ───
-        ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            colors: [AppColors.primary, AppColors.secondary],
-          ).createShader(bounds),
-          child: CustomText.displayLg(
-            AppStrings.congratulations,
-            color: AppColors.white,
-            // gradient: const LinearGradient(
-            //   begin: Alignment.topLeft,
-            //   end: Alignment.bottomRight,
-            //   colors: [
-            //     AppColors.primary,
-            //     AppColors.primary,
-            //     Color(0xFFFFA500),
-            //     AppColors.primary,
-            //     Color(0xFFFFA500),
-            //     AppColors.primary,
-            //     AppColors.primary,
-            //   ],
-            // ),
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.5,
-            textAlign: TextAlign.center,
-          ),
+        CustomText.displayLg(
+          ctrl.levelCompleted ? AppStrings.levelCompleted : AppStrings.congratulations,
+          color: AppColors.primary,
+          fontWeight: FontWeight.w800,
+          textAlign: TextAlign.center,
         ),
 
         Gap(12.h),
 
-        // ─── Winner Name Badge ───
         Container(
           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
           decoration: BoxDecoration(
             color: AppColors.primaryFixed,
             borderRadius: BorderRadius.circular(30.r),
-            border: Border.all(color: AppColors.primary.withOpacity(0.3)),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.star_rounded,
-                  color: const Color(0xFFFFD700), size: 20.sp),
-              Gap(8.w),
-              CustomText.headlineSm(
-                '${ctrl.winnerName}${AppStrings.isWinner}',
-                color: AppColors.primary,
-                fontWeight: FontWeight.w700,
-                textAlign: TextAlign.center,
-              ),
-              Gap(8.w),
-              Icon(Icons.star_rounded,
-                  color: const Color(0xFFFFD700), size: 20.sp),
-            ],
+          child: CustomText.headlineSm(
+            ctrl.levelCompleted 
+                ? '${AppStrings.level} ${ctrl.level.toString().padLeft(2, '0')} Mastered!'
+                : '${ctrl.winnerName}${AppStrings.isWinner}',
+            color: AppColors.primary,
+            fontWeight: FontWeight.w700,
+            textAlign: TextAlign.center,
           ),
         ),
+        
+        if (ctrl.levelCompleted) ...[
+          Gap(12.h),
+          CustomText.bodyMd(
+            AppStrings.nextLevelUnlocked,
+            color: AppColors.secondary,
+            fontWeight: FontWeight.w700,
+          ),
+        ],
       ],
     );
   }
 }
-
-// ─── Stats Grid ───────────────────────────────────────────────────────────────
 
 class _StatsGrid extends StatelessWidget {
   final WinnerController ctrl;
@@ -325,17 +256,10 @@ class _StatsGrid extends StatelessWidget {
           children: [
             Expanded(
               child: _StatCard(
-                icon: Icons.track_changes_rounded,
+                icon: Icons.article_rounded,
                 iconColor: AppColors.secondary,
-                label: AppStrings.accuracy,
-                value: '${ctrl.accuracy}%',
-                extra: LinearProgressIndicator(
-                  value: ctrl.accuracy / 100,
-                  backgroundColor: AppColors.surfaceContainerHighest,
-                  color: AppColors.secondary,
-                  minHeight: 6.h,
-                  borderRadius: BorderRadius.circular(4.r),
-                ),
+                label: ctrl.levelCompleted ? AppStrings.totalWordsTyped : AppStrings.accuracy,
+                value: ctrl.levelCompleted ? '${ctrl.totalWords}' : '${ctrl.accuracy}%',
               ),
             ),
             Gap(12.w),
@@ -345,7 +269,6 @@ class _StatsGrid extends StatelessWidget {
                 iconColor: AppColors.tertiary,
                 label: AppStrings.bestWord,
                 value: ctrl.bestWord,
-                valueFontSize: ctrl.bestWord.length > 6 ? 16 : 20,
               ),
             ),
           ],
@@ -363,8 +286,6 @@ class _StatsGrid extends StatelessWidget {
   }
 }
 
-// ─── Final Score Card ─────────────────────────────────────────────────────────
-
 class _FinalScoreCard extends StatelessWidget {
   final WinnerController ctrl;
   const _FinalScoreCard({required this.ctrl});
@@ -375,23 +296,9 @@ class _FinalScoreCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.primary.withOpacity(0.08),
-            AppColors.secondary.withOpacity(0.05),
-          ],
-        ),
         color: AppColors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
-        boxShadow: [
-          BoxShadow(
-              color: AppColors.shadow,
-              blurRadius: 20,
-              offset: const Offset(0, 4)),
-        ],
+        border: Border.all(color: AppColors.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -408,53 +315,25 @@ class _FinalScoreCard extends StatelessWidget {
             color: AppColors.primary,
             fontWeight: FontWeight.w800,
           ),
-          Gap(8.h),
-          Container(
-            padding:
-            EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: AppColors.secondaryContainer,
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.trending_up_rounded,
-                    color: AppColors.onSecondaryContainer, size: 16.sp),
-                Gap(4.w),
-                CustomText.labelLg(
-                  AppStrings.newPersonalBest,
-                  color: AppColors.onSecondaryContainer,
-                  fontWeight: FontWeight.w600,
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
 }
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
-
 class _StatCard extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
   final String label;
   final String value;
-  final Widget? extra;
   final bool isFullWidth;
-  final double? valueFontSize;
 
   const _StatCard({
     required this.icon,
     required this.iconColor,
     required this.label,
     required this.value,
-    this.extra,
     this.isFullWidth = false,
-    this.valueFontSize,
   });
 
   @override
@@ -466,12 +345,6 @@ class _StatCard extends StatelessWidget {
         color: AppColors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: AppColors.outlineVariant),
-        boxShadow: [
-          BoxShadow(
-              color: AppColors.shadow,
-              blurRadius: 12,
-              offset: const Offset(0, 2)),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -486,18 +359,16 @@ class _StatCard extends StatelessWidget {
           Gap(8.h),
           CustomText(
             value,
-            fontSize: valueFontSize ?? 22,
+            fontSize: 20.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.onSurface,
+            overflow: TextOverflow.ellipsis,
           ),
-          if (extra != null) ...[Gap(8.h), extra!],
         ],
       ),
     );
   }
 }
-
-// ─── Recent Words ─────────────────────────────────────────────────────────────
 
 class _RecentWords extends StatelessWidget {
   final WinnerController ctrl;
@@ -520,39 +391,28 @@ class _RecentWords extends StatelessWidget {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: ctrl.usedWords.length,
-            separatorBuilder: (_, __) => Gap(8.w),
+            separatorBuilder: (_, _) => Gap(8.w),
             itemBuilder: (_, i) {
-              final word =
-              ctrl.usedWords[ctrl.usedWords.length - 1 - i];
-              final isHighlighted = i == 0;
+              final word = ctrl.usedWords[ctrl.usedWords.length - 1 - i];
               return Container(
                 width: 90.w,
+                padding: EdgeInsets.all(8.r),
                 decoration: BoxDecoration(
-                  color: isHighlighted
-                      ? AppColors.primary
-                      : AppColors.surfaceContainerLowest,
+                  color: AppColors.surfaceContainerLowest,
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(
-                    color: isHighlighted
-                        ? AppColors.primary
-                        : AppColors.outlineVariant,
-                  ),
+                  border: Border.all(color: AppColors.outlineVariant),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CustomText.headlineSm(
                       word[0].toUpperCase(),
-                      color: isHighlighted
-                          ? AppColors.onPrimaryContainer
-                          : AppColors.onSurface,
+                      color: AppColors.primary,
                       fontWeight: FontWeight.w800,
                     ),
                     CustomText.labelSm(
                       word.toUpperCase(),
-                      color: isHighlighted
-                          ? AppColors.onPrimary
-                          : AppColors.secondary,
+                      color: AppColors.onSurface,
                       fontWeight: FontWeight.w600,
                       overflow: TextOverflow.ellipsis,
                     ),

@@ -29,6 +29,13 @@ class AppStrings {
   static const String maxPlayersNote = 'Maximum 12 players allowed.';
   static const String next = 'Next';
 
+  // Level Selection
+  static const String soloLevels = 'Solo Levels';
+  static const String level = 'Level';
+  static const String locked = 'Locked';
+  static const String completed = 'Completed';
+  static const String startHere = 'START HERE';
+
   // Player Names
   static const String setupGame = 'Setup Game';
   static const String whoIsJoining = "Who's joining the match today?";
@@ -45,10 +52,14 @@ class AppStrings {
   static const String stop = 'Stop';
   static const String pts = ' pts';
   static const String eliminated = 'Eliminated';
+  static const String wordsTarget = 'Goal: ';
 
   // Winner
   static const String congratulations = 'Congratulations!';
   static const String isWinner = ' is the winner!';
+  static const String levelCompleted = 'Level Completed!';
+  static const String nextLevelUnlocked = 'Next Level Unlocked!';
+  static const String totalWordsTyped = 'Total Words Typed';
   static const String finalScore = 'Final Score';
   static const String newPersonalBest = 'New Personal Best';
   static const String accuracy = 'Accuracy';
@@ -64,10 +75,10 @@ class AppStrings {
   static const String settings = 'Settings';
 
   // Routes
-
   static const String splashScreen = '/';
   static const String routeHome = '/routeHome';
   static const String routePlayerSelection = '/player-selection';
+  static const String routeLevelSelection = '/level-selection';
   static const String routePlayerNames = '/player-names';
   static const String routeGamePlay = '/game-play';
   static const String routeWinner = '/winner';

@@ -1,11 +1,15 @@
 import 'package:get/get.dart';
-import 'package:word_game/core/constants/app_strings.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../core/services/level_service.dart';
 
 class WinnerController extends GetxController {
   late String winnerName;
   late int winnerScore;
   late List<String> usedWords;
   late String duration;
+  int? level;
+  bool levelCompleted = false;
+  int totalWords = 0;
 
   @override
   void onInit() {
@@ -15,11 +19,22 @@ class WinnerController extends GetxController {
     winnerScore = args['winnerScore'] as int? ?? 0;
     usedWords = List<String>.from(args['usedWords'] as List? ?? []);
     duration = args['duration'] as String? ?? '00:00';
+    level = args['level'] as int?;
+    levelCompleted = args['levelCompleted'] as bool? ?? false;
+    totalWords = args['totalWords'] as int? ?? 0;
+
+    if (levelCompleted && level != null) {
+      _saveProgress();
+    }
+  }
+
+  Future<void> _saveProgress() async {
+    await LevelService.unlockNextLevel(level!);
   }
 
   int get accuracy {
     if (usedWords.isEmpty) return 100;
-    return (winnerScore / (usedWords.length * 1) * 100).clamp(0, 100).round();
+    return (winnerScore / (usedWords.length * 10) * 100).clamp(0, 100).round();
   }
 
   String get bestWord {
@@ -28,7 +43,11 @@ class WinnerController extends GetxController {
   }
 
   void playAgain() {
-    Get.offAllNamed(AppStrings.routeHome);
+    if (level != null) {
+      Get.offNamed(AppStrings.routeLevelSelection);
+    } else {
+      Get.offAllNamed(AppStrings.routeHome);
+    }
   }
 
   void goHome() {

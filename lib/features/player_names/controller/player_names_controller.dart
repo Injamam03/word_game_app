@@ -5,6 +5,7 @@ import '../../../core/constants/app_strings.dart';
 class PlayerNamesController extends GetxController {
   late int playerCount;
   late bool isComputer;
+  int? selectedLevel;
   late List<TextEditingController> nameControllers;
 
   final RxList<String> playerNames = <String>[].obs;
@@ -16,6 +17,7 @@ class PlayerNamesController extends GetxController {
     final args = Get.arguments as Map<String, dynamic>? ?? {};
     playerCount = args['playerCount'] as int? ?? 2;
     isComputer = args['isComputer'] as bool? ?? false;
+    selectedLevel = args['level'] as int?;
 
     nameControllers = List.generate(playerCount, (_) => TextEditingController());
 
@@ -42,6 +44,7 @@ class PlayerNamesController extends GetxController {
       arguments: {
         'playerNames': names,
         'isComputer': isComputer,
+        'level': selectedLevel,
       },
     );
   }

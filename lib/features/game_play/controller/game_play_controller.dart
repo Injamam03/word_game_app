@@ -152,7 +152,8 @@ class GamePlayController extends GetxController {
     errorMessage.value = msg;
     showError.value = true;
 
-    // Fix: Remove 'behavior' and use margin + barBlur to make it float in GetX
+    // Fixed: Removed unsupported 'behavior' parameter. 
+    // In GetX, margin + snackStyle: SnackStyle.FLOATING makes it float correctly.
     Get.closeAllSnackbars();
     Get.snackbar(
       'Notice',
@@ -161,13 +162,14 @@ class GamePlayController extends GetxController {
       backgroundColor: AppColors.errorContainer,
       colorText: AppColors.error,
       margin: EdgeInsets.all(20.w),
+      snackStyle: SnackStyle.FLOATING,
       duration: const Duration(seconds: 3),
       icon: const Icon(Icons.warning_rounded, color: AppColors.error),
       shouldIconPulse: true,
       barBlur: 10,
     );
 
-    // Automatically hide error state after snackbar duration to prevent UI clutter
+    // Automatically hide error after 3 seconds to keep UI clean
     Future.delayed(const Duration(seconds: 3), () {
       if (errorMessage.value == msg) {
         showError.value = false;

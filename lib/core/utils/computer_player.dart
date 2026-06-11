@@ -101,7 +101,7 @@ class ComputerPlayer {
     'nonstop','nonprofit','nonsmoking','nonsense','nonviolent','northward','northwest','northeast','northerly','nourish',
     // O
     'oath','obey','odds','okay','once','only','open','oral','orb','oval',
-    'oven','over','owed','owls','oak','ocean','offer','order','organ','other',
+    'oven','over','owed','owls','ocean','offer','order','organ','other',
     // P
     'pace','pack','page','paid','pain','pair','pale','palm','park','part',
     'pass','past','path','pave','peak','peel','peer','pest','pick','pile',

@@ -15,38 +15,58 @@ class GamePlayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ctrl = Get.find<GamePlayController>();
+
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final bool isKeyboardOpen = keyboardHeight > 0;
+
+    // কিবোর্ড উঠলে ১৯%, নামলে ৪২% হাইট
+    final double wordsAreaHeight = isKeyboardOpen
+        ? (MediaQuery.of(context).size.height * 0.19).h
+        : (MediaQuery.of(context).size.height * 0.42).h;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: _GameAppBar(ctrl: ctrl),
-      // Ensures UI resizes for keyboard instead of overflowing
       resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Column(
-          children: [
-            //  horizontal scroll player row
-            _PlayerRow(ctrl: ctrl),
-            _TurnIndicator(ctrl: ctrl),
-            
-            // NOTE: UI Error Banner removed to prevent vertical layout shifts 
-            // and RenderFlex overflows when keyboard is open.
-            // Errors are now handled exclusively by floating Snackbars.
+        // ✅ নিচে ফাঁকা জায়গা দূর করতে এবং কিবোর্ড আসলে স্ক্রোল করতে CustomScrollView ব্যবহার করা হয়েছে
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  _PlayerRow(ctrl: ctrl),
+                  _TurnIndicator(ctrl: ctrl),
 
-            // Computer Word Banner Obx
-            Obx(() {
-              final computerWord = ctrl.computerLastWord.value;
-              final hasComputer = ctrl.players.any((p) => p.isComputer);
-              return (hasComputer && computerWord.isNotEmpty)
-                  ? _ComputerWordBanner(ctrl: ctrl)
-                  : const SizedBox.shrink();
-            }),
+                  Obx(() {
+                    final computerWord = ctrl.computerLastWord.value;
+                    final hasComputer = ctrl.players.any((p) => p.isComputer);
+                    return (hasComputer && computerWord.isNotEmpty)
+                        ? _ComputerWordBanner(ctrl: ctrl)
+                        : const SizedBox.shrink();
+                  }),
 
-            // ✅ player word columns — horizontal scroll
-            Expanded(
-              child: _PlayerWordsArea(ctrl: ctrl),
+                  SizedBox(
+                    height: wordsAreaHeight,
+                    child: _PlayerWordsArea(ctrl: ctrl),
+                  ),
+                ],
+              ),
             ),
-            _RequiredLetterHint(ctrl: ctrl),
-            _InputArea(ctrl: ctrl),
-            Gap(16.h),
+            // ✅ এই অংশটি কিবোর্ড না থাকলে ইনপুট এরিয়াকে একদম স্ক্রিনের নিচে পুশ করে রাখবে
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end, // কন্টেন্ট নিচে পিন করবে
+                children: [
+                  const Spacer(), // কিবোর্ড ছাড়া অবস্থায় এক্সট্রা ফাঁকা জায়গা ওপরে ঠেলে দেবে
+                  _RequiredLetterHint(ctrl: ctrl),
+                  _InputArea(ctrl: ctrl),
+                  Gap(16.h),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -92,7 +112,7 @@ class _GameAppBar extends StatelessWidget implements PreferredSizeWidget {
               borderRadius: BorderRadius.circular(20.r),
             ),
             child: Obx(() {
-              final _ = ctrl.elapsedSeconds.value; 
+              final _ = ctrl.elapsedSeconds.value;
               final time = ctrl.formattedTime;
               return Row(
                 mainAxisSize: MainAxisSize.min,
@@ -113,7 +133,7 @@ class _GameAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-// ─── Player Row — Horizontal Scroll ──────────────────────────────────────────
+// ─── Player Row ──────────────────────────────────────────────────────────────
 
 class _PlayerRow extends StatelessWidget {
   final GamePlayController ctrl;
@@ -289,7 +309,7 @@ class _ComputerWordBanner extends StatelessWidget {
   }
 }
 
-// ─── Player Words Area — Horizontal Scroll ────────────────────────────────────
+// ─── Player Words Area ────────────────────────────────────────────────────────
 
 class _PlayerWordsArea extends StatelessWidget {
   final GamePlayController ctrl;
@@ -368,6 +388,7 @@ class _PlayerWordColumn extends StatelessWidget {
             return ListView.builder(
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
               itemCount: wordList.length,
+              physics: const ClampingScrollPhysics(),
               itemBuilder: (_, i) {
                 final word = wordList[wordList.length - 1 - i];
                 final isLatest = i == 0;
@@ -460,7 +481,7 @@ class _InputArea extends StatelessWidget {
         final index = ctrl.currentPlayerIndex.value;
         final isComputerTurn = ctrl.players[index].isComputer;
         final isValidating = ctrl.isValidating.value;
-        
+
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [

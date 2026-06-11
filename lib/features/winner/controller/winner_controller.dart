@@ -43,11 +43,22 @@ class WinnerController extends GetxController {
     return usedWords.reduce((a, b) => a.length >= b.length ? a : b).toUpperCase();
   }
 
+  // void playAgain() {
+  //   if (level != null) {
+  //     Get.delete<GamePlayController>(force: true);     // game state clear
+  //     Get.delete<LevelSelectionController>(force: true); // level screen fresh load
+  //     Get.offNamed(AppStrings.routeLevelSelection);
+  //   } else {
+  //     Get.offAllNamed(AppStrings.routeHome);
+  //   }
+  // }
   void playAgain() {
     if (level != null) {
-      Get.delete<GamePlayController>(force: true);     // game state clear
-      Get.delete<LevelSelectionController>(force: true); // level screen fresh load
-      Get.offNamed(AppStrings.routeLevelSelection);
+      Get.delete<LevelSelectionController>(force: true);
+      Get.offNamedUntil(
+        AppStrings.routeLevelSelection,
+            (route) => route.settings.name == AppStrings.routeHome,
+      );
     } else {
       Get.offAllNamed(AppStrings.routeHome);
     }

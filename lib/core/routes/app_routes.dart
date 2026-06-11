@@ -46,12 +46,19 @@ class AppRoutes {
         Get.lazyPut(() => PlayerNamesController());
       }),
     ),
+    // GetPage(
+    //   name: AppStrings.routeGamePlay,
+    //   page: () => const GamePlayScreen(),
+    //   binding: BindingsBuilder(() {
+    //     Get.delete<GamePlayController>(force: true); // পুরনোটা মুছে দাও
+    //     Get.put(GamePlayController());               // নতুন করে তৈরি করো
+    //   }),
+    // ),
     GetPage(
       name: AppStrings.routeGamePlay,
       page: () => const GamePlayScreen(),
       binding: BindingsBuilder(() {
-        Get.delete<GamePlayController>(force: true); // পুরনোটা মুছে দাও
-        Get.put(GamePlayController());               // নতুন করে তৈরি করো
+        Get.put(GamePlayController());
       }),
     ),
     GetPage(

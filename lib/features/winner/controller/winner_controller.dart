@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
+import 'package:word_game/features/game_play/controller/game_play_controller.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/services/level_service.dart';
+import '../../level_selection/controller/level_selection_controller.dart';
 
 class WinnerController extends GetxController {
   late String winnerName;
@@ -22,7 +24,6 @@ class WinnerController extends GetxController {
     level = args['level'] as int?;
     levelCompleted = args['levelCompleted'] as bool? ?? false;
     totalWords = args['totalWords'] as int? ?? 0;
-
     if (levelCompleted && level != null) {
       _saveProgress();
     }
@@ -44,6 +45,8 @@ class WinnerController extends GetxController {
 
   void playAgain() {
     if (level != null) {
+      Get.delete<GamePlayController>(force: true);     // game state clear
+      Get.delete<LevelSelectionController>(force: true); // level screen fresh load
       Get.offNamed(AppStrings.routeLevelSelection);
     } else {
       Get.offAllNamed(AppStrings.routeHome);

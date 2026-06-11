@@ -50,7 +50,8 @@ class AppRoutes {
       name: AppStrings.routeGamePlay,
       page: () => const GamePlayScreen(),
       binding: BindingsBuilder(() {
-        Get.lazyPut(() => GamePlayController());
+        Get.delete<GamePlayController>(force: true); // পুরনোটা মুছে দাও
+        Get.put(GamePlayController());               // নতুন করে তৈরি করো
       }),
     ),
     GetPage(

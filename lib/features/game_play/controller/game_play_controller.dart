@@ -163,14 +163,27 @@ class GamePlayController extends GetxController {
       colorText: AppColors.error,
       margin: EdgeInsets.all(20.w),
       snackStyle: SnackStyle.FLOATING,
-      duration: const Duration(seconds: 3),
-      icon: const Icon(Icons.warning_rounded, color: AppColors.error),
+      duration: const Duration(seconds: 2),
+      icon: SizedBox(
+        width: 28,
+        height: 28,
+        child: Icon(Icons.warning_rounded, color: Colors.red, size: 28),
+      ),
       shouldIconPulse: true,
-      barBlur: 10,
+      barBlur: 16,
+      borderColor: AppColors.error,   // 👈 border color
+      borderWidth: 1,
+      messageText: Text(           // 👈 এটা add করো
+        msg,
+        style: TextStyle(
+          fontSize: 16.sp,
+          color: AppColors.error,
+        ),
+      ),
     );
 
     // Automatically hide error after 3 seconds to keep UI clean
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
       if (errorMessage.value == msg) {
         showError.value = false;
       }
@@ -180,7 +193,6 @@ class GamePlayController extends GetxController {
   void stopPlayer() {
     currentPlayer.isEliminated.value = true;
     currentPlayer.isActive.value = false;
-
     if (activePlayers.length <= 1) {
       _endGame();
       return;

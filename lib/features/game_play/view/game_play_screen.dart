@@ -23,7 +23,7 @@ class GamePlayScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // ✅ horizontal scroll player row
+            //  horizontal scroll player row
             _PlayerRow(ctrl: ctrl),
             _TurnIndicator(ctrl: ctrl),
             
@@ -181,7 +181,7 @@ class _PlayerCard extends StatelessWidget {
                     Icon(Icons.play_arrow_rounded,
                         color: AppColors.primary, size: 11.sp),
                   Flexible(
-                    child: CustomText.labelSm(
+                    child: CustomText.labelLg(
                       player.name,
                       color: isActive
                           ? AppColors.primary
@@ -195,7 +195,7 @@ class _PlayerCard extends StatelessWidget {
                 ],
               ),
               Gap(3.h),
-              CustomText.labelSm(
+              CustomText.labelLg(
                 '$wordCount ${wordCount == 1 ? "word" : "words"}',
                 color: isActive ? AppColors.primary : AppColors.outline,
                 fontWeight: FontWeight.w600,
@@ -344,7 +344,7 @@ class _PlayerWordColumn extends StatelessWidget {
               bottom: BorderSide(color: AppColors.primary, width: 2),
             ),
           ),
-          child: CustomText.labelSm(
+          child: CustomText.bodyMd(
             player.name,
             color: AppColors.onSurface,
             fontWeight: FontWeight.w700,
@@ -386,7 +386,7 @@ class _PlayerWordColumn extends StatelessWidget {
                           : AppColors.outlineVariant,
                     ),
                   ),
-                  child: CustomText.labelSm(
+                  child: CustomText.bodyMd(
                     word.isNotEmpty
                         ? "${word[0].toUpperCase()}${word.substring(1).toLowerCase()}"
                         : word,
